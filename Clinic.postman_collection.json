@@ -1,0 +1,805 @@
+{
+	"info": {
+		"_postman_id": "084680e7-de38-442b-8313-658378e048c3",
+		"name": "Clinic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User Authentication API",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "Patient@patient.com",
+									"description": "Patient@patient.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345678",
+									"description": "Doctor@doctor.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/login/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 9ffd9f273f371ffb2b8ac82584a26a126b21357761106299bf1af2a3e005fc9a",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/logout/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"logout",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "type",
+									"value": "Doctor",
+									"description": "Doctor - Patient",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "Doctor@doctor.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345678",
+									"description": "password must be >= 8",
+									"type": "text"
+								},
+								{
+									"key": "confirm_password",
+									"value": "12345678",
+									"description": "password must be >= 8",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/register/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"register",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token bbf6cb8826f9415efc8602c8ebc28742f0194828bb7b26db552b0f4e7f8dbe32",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "old_password",
+									"value": "karimkarim",
+									"type": "text"
+								},
+								{
+									"key": "new_password",
+									"value": "karim",
+									"type": "text"
+								},
+								{
+									"key": "confirm_new_password",
+									"value": "karim",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/change/password/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"change",
+								"password",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Doctor API",
+			"item": [
+				{
+					"name": "Edit Information API",
+					"item": [
+						{
+							"name": "Doctor Edit General Info",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token a91277c3a6fb273c7fe10da24771e2dce756ab683cc4aecdb4a91f849c490e98",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "first_name",
+											"value": "a",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "last_name",
+											"value": "a",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "email",
+											"value": "Doctor@doctor.com",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "work_phone_number",
+											"value": "5000596",
+											"type": "text"
+										},
+										{
+											"key": "birthday",
+											"value": "1999-05-22",
+											"type": "text"
+										},
+										{
+											"key": "about_me",
+											"value": "a",
+											"type": "text"
+										},
+										{
+											"key": "specialization",
+											"value": "a",
+											"type": "text"
+										},
+										{
+											"key": "years_of_experience",
+											"value": "117",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/karim/Downloads/images/test0.jpeg"
+										},
+										{
+											"key": "gender",
+											"value": "Male",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/doctor/edit/general/info/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"doctor",
+										"edit",
+										"general",
+										"info",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Doctor Edit Personal Info Copy",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token a91277c3a6fb273c7fe10da24771e2dce756ab683cc4aecdb4a91f849c490e98",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "personal_phone_number",
+											"value": "cc",
+											"type": "text"
+										},
+										{
+											"key": "personal_ID",
+											"value": "cc",
+											"type": "text"
+										},
+										{
+											"key": "face_photo",
+											"description": "IMG Must be a file",
+											"type": "file",
+											"src": "/home/karim/Downloads/images/test4.jpg"
+										},
+										{
+											"key": "marital_status",
+											"value": "Divorced",
+											"description": "Married - Widowed - Divorced - Single - unknown",
+											"type": "text"
+										},
+										{
+											"key": "location",
+											"value": "ccc",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/doctor/edit/personal/info/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"doctor",
+										"edit",
+										"personal",
+										"info",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Doctor Edit Education Info",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token a91277c3a6fb273c7fe10da24771e2dce756ab683cc4aecdb4a91f849c490e98",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "university",
+											"value": "ccs",
+											"type": "text"
+										},
+										{
+											"key": "degree",
+											"value": "ccs",
+											"type": "text"
+										},
+										{
+											"key": "time_period",
+											"value": "12-15",
+											"type": "text"
+										},
+										{
+											"key": "certificate",
+											"type": "file",
+											"src": []
+										},
+										{
+											"key": "medical_licence",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/doctor/edit/education/info/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"doctor",
+										"edit",
+										"education",
+										"info",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Doctor Edit Work Experience",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token a91277c3a6fb273c7fe10da24771e2dce756ab683cc4aecdb4a91f849c490e98",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "10",
+											"type": "text"
+										},
+										{
+											"key": "title",
+											"value": "ww",
+											"type": "text"
+										},
+										{
+											"key": "time_period",
+											"value": "ww",
+											"type": "text"
+										},
+										{
+											"key": "body",
+											"value": "ww",
+											"type": "text"
+										},
+										{
+											"key": "certificate",
+											"type": "file",
+											"src": "/home/karim/Downloads/images/عبد الكريم معين  df  سي 458.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/doctor/edit/work/experience/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"doctor",
+										"edit",
+										"work",
+										"experience",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create APi's",
+					"item": [
+						{
+							"name": "Doctor Create Work Experience",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token a91277c3a6fb273c7fe10da24771e2dce756ab683cc4aecdb4a91f849c490e98",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "ww",
+											"type": "text"
+										},
+										{
+											"key": "time_period",
+											"value": "ww",
+											"type": "text"
+										},
+										{
+											"key": "body",
+											"value": "www",
+											"type": "text"
+										},
+										{
+											"key": "certificate",
+											"description": "IMG Must be a file",
+											"type": "file",
+											"src": "/home/karim/Downloads/images/test0.jpeg"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/doctor/create/work/experience/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"doctor",
+										"create",
+										"work",
+										"experience",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Patient API",
+			"item": [
+				{
+					"name": "Edit Information API",
+					"item": [
+						{
+							"name": "Patient Edit General Info",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token 1a5e668e03f5e26a0f6db48d9914ffb47858fe8da81e83b2e04d49815a1d58da",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "first_name",
+											"value": "Patient",
+											"type": "text"
+										},
+										{
+											"key": "last_name",
+											"value": "Patient2",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "Patient@patient.com",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "birthday",
+											"value": "1999-05-21",
+											"type": "text"
+										},
+										{
+											"key": "gender",
+											"value": "Female",
+											"type": "text"
+										},
+										{
+											"key": "about_me",
+											"value": "12345678",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/karim/Downloads/images/test0.jpeg"
+										},
+										{
+											"key": "location",
+											"value": "12345678",
+											"type": "text"
+										},
+										{
+											"key": "personal_phone_number",
+											"value": "12345678",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/patient/edit/general/info/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"patient",
+										"edit",
+										"general",
+										"info",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User API",
+			"item": [
+				{
+					"name": "Basic Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a91277c3a6fb273c7fe10da24771e2dce756ab683cc4aecdb4a91f849c490e98",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/user/get/basic/info/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"get",
+								"basic",
+								"info",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token a91277c3a6fb273c7fe10da24771e2dce756ab683cc4aecdb4a91f849c490e98",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/user/get/profile/info/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"get",
+								"profile",
+								"info",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Chat",
+			"item": [
+				{
+					"name": "Get Contacts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 63d9e45ac2d07cb022a14d0e651263768a8f248b3b10b7cdd50858d88196754d",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/chat/get/contacts/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"chat",
+								"get",
+								"contacts",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Add Contacts List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 63d9e45ac2d07cb022a14d0e651263768a8f248b3b10b7cdd50858d88196754d",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/chat/get/add/contacts/list/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"chat",
+								"get",
+								"add",
+								"contacts",
+								"list",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Web API",
+			"item": [
+				{
+					"name": "Get All Departments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token d0739202e91a427353aed2b525fea26b90e44b2ef8f78a1976305ebe4e2c6304",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/get/departments/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"get",
+								"departments",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
