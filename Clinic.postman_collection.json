@@ -532,6 +532,53 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Delete API's",
+					"item": [
+						{
+							"name": "Doctor Delete Work Experience",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token a91277c3a6fb273c7fe10da24771e2dce756ab683cc4aecdb4a91f849c490e98",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "7",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/doctor/delete/work/experience/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"doctor",
+										"delete",
+										"work",
+										"experience",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		},
@@ -618,6 +665,167 @@
 										"edit",
 										"general",
 										"info",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Patient Edit Medical History",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token dc5e18194d60d6741fddbf42e68e3e244971e12a4842dbdfe285a36f2bcc02f3",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "11",
+											"type": "text"
+										},
+										{
+											"key": "title",
+											"value": "ss",
+											"type": "text"
+										},
+										{
+											"key": "time_period",
+											"value": "ss",
+											"type": "text"
+										},
+										{
+											"key": "body",
+											"value": "ss",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/patient/edit/medical/history/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"patient",
+										"edit",
+										"medical",
+										"history",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create APi's",
+					"item": [
+						{
+							"name": "Patient Create Medica lHistory",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token dc5e18194d60d6741fddbf42e68e3e244971e12a4842dbdfe285a36f2bcc02f3",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "ww",
+											"type": "text"
+										},
+										{
+											"key": "time_period",
+											"value": "ww",
+											"type": "text"
+										},
+										{
+											"key": "body",
+											"value": "www",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/patient/create/medical/history/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"patient",
+										"create",
+										"medical",
+										"history",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete API's",
+					"item": [
+						{
+							"name": "Patient Delete Medical History",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token dc5e18194d60d6741fddbf42e68e3e244971e12a4842dbdfe285a36f2bcc02f3",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "13",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/patient/delete/medical/history/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"patient",
+										"delete",
+										"medical",
+										"history",
 										""
 									]
 								}

@@ -15,9 +15,13 @@ from .views import (
                     DoctorEditEducationInfo,
                     DoctorEditWorkExperience,
                     DoctorCreateWorkExperience,
+                    DoctorDeleteWorkExperience,
 
                     #Patient Views
                     PatientEditGeneralInfo,
+                    PatientEditMedicalHistory,
+                    PatientCreateMedicalHistory,
+                    PatientDeleteMedicalHistory,
                     )
 
 urlpatterns = [
@@ -38,7 +42,12 @@ urlpatterns = [
     path('doctor/edit/education/info/', DoctorEditEducationInfo.as_view()),
     path('doctor/edit/work/experience/', DoctorEditWorkExperience.as_view()),
     path('doctor/create/work/experience/', DoctorCreateWorkExperience.as_view()),
+    path('doctor/delete/work/experience/', DoctorDeleteWorkExperience.as_view()),
 
     # Patient API's
     path('patient/edit/general/info/', PatientEditGeneralInfo.as_view()),
+    path('patient/edit/medical/history/', PatientEditMedicalHistory.as_view()),
+    path('patient/create/medical/history/', PatientCreateMedicalHistory.as_view()),
+    path('patient/delete/medical/history/', PatientDeleteMedicalHistory.as_view()),
+
 ]

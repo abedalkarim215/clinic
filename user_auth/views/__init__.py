@@ -13,10 +13,14 @@ from .DoctorViews import (
     DoctorEditEducationInfo,
     DoctorEditWorkExperience,
     DoctorCreateWorkExperience,
+    DoctorDeleteWorkExperience,
 )
 
 from .PatientViews import (
-PatientEditGeneralInfo,
+    PatientEditGeneralInfo,
+    PatientEditMedicalHistory,
+    PatientCreateMedicalHistory,
+    PatientDeleteMedicalHistory,
 
 )
 __all__ = [
@@ -35,7 +39,11 @@ __all__ = [
     DoctorEditEducationInfo,
     DoctorEditWorkExperience,
     DoctorCreateWorkExperience,
+    DoctorDeleteWorkExperience,
 
     #Patient Views
     PatientEditGeneralInfo,
+    PatientEditMedicalHistory,
+    PatientCreateMedicalHistory,
+    PatientDeleteMedicalHistory,
 ]

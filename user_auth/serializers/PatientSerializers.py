@@ -40,6 +40,25 @@ class PatientMedicalHistorySerializer(serializers.ModelSerializer):
             'time_period',
             'body',
         ]
+        read_only_fields = ['id']
+
+    def create(self, validated_data):
+        patient = self.context['request'].user.patient
+        title = validated_data['title']
+        time_period = validated_data['time_period']
+        body = validated_data['body']
+
+        medical_history = MedicalHistory.objects.create(
+            patient=patient,
+            title=title,
+            time_period=time_period,
+            body=body,
+        )
+        if medical_history:
+            return medical_history
+        else:
+            msg = 'لم يتم الإنشاء.'
+            raise serializers.ValidationError(msg, code='authorization')
 
 class PatientProfileInfoSerializer(serializers.ModelSerializer):
     general = serializers.SerializerMethodField('get_general')
