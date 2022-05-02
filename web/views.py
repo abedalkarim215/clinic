@@ -1,10 +1,32 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from user_auth.permissions import IsDoctor,IsPatient
+from rest_framework.response import Response
+
 from .models import (
     Department,
+    Question,
+    QuestionFile,
+    File,
 )
+from user_auth.models import Doctor
 
+def MissParameters():
+        return Response({
+            'status': False,
+            'msg': "يرجى إرسال المعرف (id) الخاص بالعنصر",
+        },
+            status=400
+        )
+
+def NotFound():
+        return Response({
+            'status': False,
+            'msg': "العنصر الذي تحاول التعديل عليه غير موجود",
+        },
+            status=404
+        )
 
 class Departments(generics.ListAPIView):
     from .serializers import DepartmentSerializer
@@ -55,3 +77,133 @@ class Departments(generics.ListAPIView):
         #     new_department = Department.objects.create(name=departmet)
         departments = Department.objects.all()
         return departments
+
+
+
+class QuestionDetails(generics.RetrieveAPIView):
+    from .serializers import QuestionSerializer
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticated, IsDoctor|IsPatient]
+    lookup_field = 'id'
+    def get_object(self):
+        try:
+            question_id = self.request.GET[self.lookup_field]
+        except:
+            return 0
+        try:
+            question = Question.objects.get(id=question_id)
+            return question
+        except:
+            return 1
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance == 0: MissParameters()
+        if instance == 1: NotFound()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+
+class CreateQuestion(generics.CreateAPIView):
+    from .serializers import QuestionSerializer
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticated,IsPatient]
+
+class EditQuestion(generics.UpdateAPIView):
+    from .serializers import QuestionSerializer
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticated,IsPatient]
+    lookup_field = 'id'
+
+    def get_object(self):
+        try:
+            question_id = self.request.POST[self.lookup_field]
+        except:
+            return 0
+        try:
+            question = Question.objects.get(id=question_id,patient=self.request.user.patient)
+        except:
+            return 1
+        self.check_object_permissions(self.request, question)
+        return question
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        if instance == 0: MissParameters()
+        if instance == 1: NotFound()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+        return Response(serializer.data)
+
+
+class QuestionDiscussions(generics.ListAPIView):
+    from .serializers import DiscussionSerializer
+    serializer_class = DiscussionSerializer
+    permission_classes = [IsAuthenticated, IsDoctor|IsPatient]
+    # pagination_class = Tru
+
+    def get_queryset(self):
+        try:
+            question_id = self.request.GET["question_id"]
+        except:
+            return 0
+        try:
+            question_discussions = Question.objects.get(id=question_id).discussion_set.all()
+        except:
+            return 1
+        return question_discussions
+
+    def list(self, request, *args, **kwargs):
+        query = self.get_queryset()
+        if query == 0 : MissParameters()
+        if query == 1 : NotFound()
+        queryset = self.filter_queryset(query)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+import os
+from django.http import FileResponse,HttpResponse
+def dummy_secure_media_directory(request,file):
+    try:
+        print("a"*100)
+
+        print(file)
+        document = File.objects.get(path=f'files/{file}')
+        question = QuestionFile.objects.get(file_id=document.id).question
+        print("a"*100)
+
+        # user_email_as_string = file.split('/')[0]
+        # if (user_email_as_string == request.user.email_as_string()):
+        users_access = []
+        if question.to_doctor:
+            users_access.append(question.to_doctor.user)
+        else:
+            if question.department:
+                department_doctors = Doctor.objects.filter(department_id=question.department.id)
+                for doctor in department_doctors:
+                    users_access.append(doctor.user)
+            else:
+                users_access = ['ALL_DOCTORS']
+        print(users_access)
+        print((('ALL_DOCTORS' in users_access) and (request.user.account_type() == 'Doctor')) or \
+                (request.user in users_access) or \
+                (request.user == question.patient.user))
+        if (('ALL_DOCTORS' in users_access) and (request.user.account_type() == 'Doctor')) or \
+                (request.user in users_access) or \
+                (request.user == question.patient.user):
+            file_path = os.path.join(os.getcwd() , 'media/files/',file)
+            file_opened = open(file_path, 'rb')
+            response = FileResponse(file_opened)
+            return response
+        else:
+            return HttpResponse(status=403)
+    except:
+        return HttpResponse(status=403)

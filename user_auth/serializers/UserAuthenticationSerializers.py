@@ -36,17 +36,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         email = validated_data['email']
         password = validated_data['password']
         confirm_password = validated_data['confirm_password']
-        # if type == "Doctor":
-        #     personal_ID = validated_data['personal_ID']
-        #     personal_ID_is_taken = Doctor.objects.filter(personal_ID=personal_ID).exists()
-        #     if personal_ID_is_taken :
-        #         msg = _('الرقم المدني المدخل مستخدم من قبل شخص أخر ، يرجى إدخال رقم آخر.')
-        #         raise serializers.ValidationError(msg, code='authorization')
-
-        # email_is_taken = User.objects.filter(email=email).exists()
-        # if email_is_taken :
-        #     msg = _('البريد الالكتروني المدخل مستخدم من قبل شخص أخر ، يرجى إدخال بريد إخر.')
-        #     raise serializers.ValidationError(msg, code='authorization')
 
         if password == "":
             msg = _('يرجى إدخال كلمة المرور')
@@ -60,21 +49,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         if len(password) < 8 :
             msg = _('كلمة المرور قصيرة جدا ، يجب أن لا تقل كلمة المرور عن 8 حروف أو أرقام.')
             raise serializers.ValidationError(msg, code='authorization')
-
-
-        # personal_phone_number_is_taken = User.objects.filter(personal_phone_number=personal_phone_number).exists()
-        # if personal_phone_number_is_taken :
-        #     msg = _('رقم الهاتف المدخل مستخدم من قبل شخص أخر ، يرجى إدخال رقم آخر.')
-        #     raise serializers.ValidationError(msg, code='authorization')
-        #
-
-
-        #image url settings
-        # fs = FileSystemStorage()
-        # filename = fs.save(upload_user_image(email_to_string(email),image.name), image)
-        # uploaded_file_url = fs.url(filename)
-        # image_url = str(uploaded_file_url)[6:]
-        #end image url settings
 
         user = User.objects.create_user(
                                         email=email,

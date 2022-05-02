@@ -129,8 +129,9 @@ class DoctorWorkExperienceSerializer(serializers.ModelSerializer):
             'time_period',
             'body',
             'certificate',
+            'created_at',
         ]
-        read_only_fields = ['id']
+        read_only_fields = ['id','created_at']
 
     def create(self, validated_data):
         def upload_doctor_work_experience_certificate(doctor, filename):
@@ -148,7 +149,7 @@ class DoctorWorkExperienceSerializer(serializers.ModelSerializer):
         fs = FileSystemStorage()
         filename = fs.save(upload_doctor_work_experience_certificate(doctor, certificate.name), certificate)
         uploaded_file_url = fs.url(filename)
-        certificate_url = str(uploaded_file_url)[6:]
+        certificate_url = str(uploaded_file_url)[7:]
 
         work_experience = WorkExperience.objects.create(
             doctor=doctor,

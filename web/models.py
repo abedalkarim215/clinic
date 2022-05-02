@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-
+from datetime import datetime
 
 class Department(models.Model):
     name = models.CharField(max_length=255,null=True,blank=True)
@@ -17,8 +17,16 @@ class Question(models.Model):
     created_at = models.DateTimeField(_('date created'), auto_now_add=True)
 
     def __str__(self):
-        return self.patient.user.email
+        return str(self.id)
 
+    def files(self):
+        question_files = [file_path.path for file_path in File.objects.filter(id__in=list(self.questionfile_set.values_list('file_id',flat=True)))]
+        return question_files
+
+    def discussions(self):
+        question_discussions = self.discussion_set.all()
+        from .serializers import DiscussionSerializer
+        return DiscussionSerializer(question_discussions,many=True).data
 class Discussion(models.Model):
     question = models.ForeignKey('web.Question',on_delete= models.CASCADE)
     user = models.ForeignKey('user_auth.User', on_delete=models.CASCADE)
@@ -56,14 +64,16 @@ class BlogLike(models.Model):
 
 class File(models.Model):
     def upload_file(self, filename):
-        return 'files/{}/{}'.format(
-            self.type,
-            filename
+        return 'files/{date}/{type}/{filename}'.format(
+            # user=patient.user.email_as_string(),
+            date=datetime.today().date(),
+            type=self.type,
+            filename=filename
         )
     class Type(models.TextChoices):
-        Image = "img", "Image"
-        Video = "vd", "Video"
-        Voice = "vs", "Voice"
+        Image = "image", "Image"
+        Video = "video", "Video"
+        Voice = "audio", "Audio"
     path = models.FileField(
         upload_to=upload_file,
         default='/default_images/default_image_for_all_models.jpeg'

@@ -12,6 +12,16 @@ from .models import (
                     Department,
 )
 
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ('id','name')
+
+class FileAdmin(admin.ModelAdmin):
+    list_display = ('id','path')
+
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ('id','title','patient','files')
+
+
 # class ProfileAdmin(admin.ModelAdmin):
 #     list_display = ('id','username','email','full_name','mobile')
 #
@@ -23,15 +33,15 @@ from .models import (
 #
 #
 
-admin.site.register(Question)
+admin.site.register(Question,QuestionAdmin)
 admin.site.register(Discussion)
 admin.site.register(Blog)
 admin.site.register(Comment)
 admin.site.register(BlogLike)
-admin.site.register(File)
+admin.site.register(File,FileAdmin)
 admin.site.register(QuestionFile)
 admin.site.register(DiscussionFile)
 admin.site.register(BlogFile)
-admin.site.register(Department)
+admin.site.register(Department,DepartmentAdmin)
 
 

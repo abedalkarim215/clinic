@@ -39,8 +39,9 @@ class PatientMedicalHistorySerializer(serializers.ModelSerializer):
             'title',
             'time_period',
             'body',
+            'created_at',
         ]
-        read_only_fields = ['id']
+        read_only_fields = ['id','created_at']
 
     def create(self, validated_data):
         patient = self.context['request'].user.patient
