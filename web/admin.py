@@ -7,7 +7,7 @@ from .models import (
                     BlogLike,
                     File,
                     QuestionFile,
-                    DiscussionFile,
+                    # DiscussionFile,
                     BlogFile,
                     Department,
 )
@@ -21,7 +21,8 @@ class FileAdmin(admin.ModelAdmin):
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('id','title','patient','files')
 
-
+class DiscussionAdmin(admin.ModelAdmin):
+    list_display = ('id','user','question','body')
 # class ProfileAdmin(admin.ModelAdmin):
 #     list_display = ('id','username','email','full_name','mobile')
 #
@@ -34,13 +35,13 @@ class QuestionAdmin(admin.ModelAdmin):
 #
 
 admin.site.register(Question,QuestionAdmin)
-admin.site.register(Discussion)
+admin.site.register(Discussion,DiscussionAdmin)
 admin.site.register(Blog)
 admin.site.register(Comment)
 admin.site.register(BlogLike)
 admin.site.register(File,FileAdmin)
 admin.site.register(QuestionFile)
-admin.site.register(DiscussionFile)
+# admin.site.register(DiscussionFile)
 admin.site.register(BlogFile)
 admin.site.register(Department,DepartmentAdmin)
 

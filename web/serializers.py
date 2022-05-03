@@ -114,13 +114,73 @@ class QuestionSerializer(serializers.ModelSerializer):
             msg = 'لم يتم الإنشاء.'
             raise serializers.ValidationError(msg, code='authorization')
 
-class DiscussionSerializer(serializers.ModelSerializer):
+class QuestionDiscussionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Discussion
         fields = [
             'id',
             'user',
             'body',
+            'file',
             'created_at',
         ]
         read_only_fields = ['id','created_at']
+
+
+def get_upload_discussion_file_path(user, filename):
+    return 'discussions/files/{date}/{user}/{filename}'.format(
+        date=datetime.today().date(),
+        user=user.email_as_string(),
+        filename=filename
+    )
+class DiscussionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Discussion
+        fields = [
+            'id',
+            'question',
+            'body',
+            'file',
+            'created_at',
+        ]
+        read_only_fields = ['id', 'created_at']
+        extra_kwargs = {
+            'question': {'required': True},
+            'body': {'required': True},
+            'file': {'required': False},
+        }
+    def get_fields(self, *args, **kwargs):
+        fields = super(DiscussionSerializer, self).get_fields(*args, **kwargs)
+        request = self.context.get('request', None)
+        if request and getattr(request, 'method', None) == "PUT":
+            fields['question'].required = False
+            fields['question'].read_only = True
+            fields['body'].required = False
+        return fields
+    def create(self, validated_data):
+        user = self.context['request'].user
+        question = validated_data['question']
+        if (not (user.account_type() == "Doctor")) and (not (user == question.patient.user)):
+            msg = 'لا تملك صلاحية بالتعليق على هذا السؤال.'
+            raise serializers.ValidationError(msg, code='authorization')
+        body = validated_data['body']
+        file = validated_data['file'] if 'file' in validated_data else None
+
+        discussion = Discussion.objects.create(
+            question=question,
+            user=user,
+            body=body,
+        )
+        if discussion:
+            if file:
+                fs = FileSystemStorage()
+                filename = fs.save(get_upload_discussion_file_path(user, file.name), file)
+                uploaded_file_url = fs.url(filename)
+                file_url = str(uploaded_file_url)[7:]
+                discussion.file = file_url
+                discussion.save()
+            return discussion
+        else:
+            msg = 'لم يتم الإنشاء.'
+            raise serializers.ValidationError(msg, code='authorization')
+

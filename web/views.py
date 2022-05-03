@@ -3,12 +3,15 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from user_auth.permissions import IsDoctor,IsPatient
 from rest_framework.response import Response
+import os
+from django.http import FileResponse,HttpResponse
 
 from .models import (
     Department,
     Question,
     QuestionFile,
     File,
+    Discussion,
 )
 from user_auth.models import Doctor
 
@@ -21,10 +24,11 @@ def MissParameters():
         )
 
 def NotFound():
-        return Response({
+        return Response(
+            {
             'status': False,
             'msg': "العنصر الذي تحاول التعديل عليه غير موجود",
-        },
+            },
             status=404
         )
 
@@ -98,8 +102,22 @@ class QuestionDetails(generics.RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        if instance == 0: MissParameters()
-        if instance == 1: NotFound()
+        if instance == 0:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "يرجى إرسال المعرف (id) الخاص بالعنصر",
+                },
+                status=400
+            )
+        if instance == 1:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "العنصر الذي تحاول عرض تفاصيله غير موجود",
+                },
+                status=404
+            )
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
@@ -130,8 +148,22 @@ class EditQuestion(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        if instance == 0: MissParameters()
-        if instance == 1: NotFound()
+        if instance == 0:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "يرجى إرسال المعرف (id) الخاص بالعنصر",
+                },
+                status=400
+            )
+        if instance == 1:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "العنصر الذي تحاول التعديل عليه غير موجود",
+                },
+                status=404
+            )
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
@@ -141,10 +173,9 @@ class EditQuestion(generics.UpdateAPIView):
 
 
 class QuestionDiscussions(generics.ListAPIView):
-    from .serializers import DiscussionSerializer
-    serializer_class = DiscussionSerializer
+    from .serializers import QuestionDiscussionsSerializer
+    serializer_class = QuestionDiscussionsSerializer
     permission_classes = [IsAuthenticated, IsDoctor|IsPatient]
-    # pagination_class = Tru
 
     def get_queryset(self):
         try:
@@ -159,8 +190,24 @@ class QuestionDiscussions(generics.ListAPIView):
 
     def list(self, request, *args, **kwargs):
         query = self.get_queryset()
-        if query == 0 : MissParameters()
-        if query == 1 : NotFound()
+        print("1"*100)
+        if query == 0 :
+            return Response(
+                {
+                'status': False,
+                'msg': "يرجى إرسال المعرف (id) الخاص بالعنصر",
+                },
+                status=400
+            )
+        if query == 1 :
+            return Response(
+                {
+                    'status': False,
+                    'msg': "العنصر الذي تحاول عرض تفاصيله غير موجود",
+                },
+                status=404
+            )
+        print('2'*100)
         queryset = self.filter_queryset(query)
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -169,8 +216,7 @@ class QuestionDiscussions(generics.ListAPIView):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-import os
-from django.http import FileResponse,HttpResponse
+
 def dummy_secure_media_directory(request,file):
     try:
         print("a"*100)
@@ -207,3 +253,133 @@ def dummy_secure_media_directory(request,file):
             return HttpResponse(status=403)
     except:
         return HttpResponse(status=403)
+
+
+
+class CreateDiscussion(generics.CreateAPIView):
+    from .serializers import DiscussionSerializer
+    serializer_class = DiscussionSerializer
+    permission_classes = [IsAuthenticated,IsDoctor|IsPatient]
+
+class EditDiscussion(generics.UpdateAPIView):
+    from .serializers import DiscussionSerializer
+    serializer_class = DiscussionSerializer
+    permission_classes = [IsAuthenticated,IsDoctor|IsPatient]
+    lookup_field = 'id'
+
+    def get_object(self):
+        try:
+            discussion_id = self.request.POST[self.lookup_field]
+        except:
+            return 0
+        try:
+            discussion = Discussion.objects.get(id=discussion_id,user=self.request.user)
+        except:
+            return 1
+        # self.check_object_permissions(self.request, discussion)
+        return discussion
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        if instance == 0:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "يرجى إرسال المعرف (id) الخاص بالعنصر",
+                },
+                status=400
+            )
+        if instance == 1:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "العنصر الذي تحاول التعديل عليه غير موجود",
+                },
+                status=404
+            )
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+        return Response(serializer.data)
+
+
+class DeleteQuestion(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated,IsPatient]
+    lookup_field = 'id'
+    def get_object(self):
+        try:
+            question_id = self.request.POST[self.lookup_field]
+        except:
+            return 0
+        try:
+            question = Question.objects.get(pk=question_id,patient=self.request.user.patient)
+            return question
+        except:
+            return 1
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance == 0:
+            return Response({
+                            'status':False,
+                            'msg':"يرجى إرسال المعرف (id) الخاص بالعنصر المراد حذفه",
+                            },
+                            status=400
+                           )
+        if instance == 1 :
+            return Response({
+                            'status':False,
+                            'msg':"العنصر الذي تحاول حذفه غير موجود",
+                            },
+                            status=404
+                           )
+        else:
+            self.check_object_permissions(self.request, instance)
+            self.perform_destroy(instance)
+            return Response({
+                            'status': True,
+                            'msg': "تم حذف العنصر بنجاح",
+                            },
+                            status=201
+                            )
+
+class DeleteDiscussion(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated,IsDoctor|IsPatient]
+    lookup_field = 'id'
+    def get_object(self):
+        try:
+            discussion_id = self.request.POST[self.lookup_field]
+        except:
+            return 0
+        try:
+            discussion = Discussion.objects.get(pk=discussion_id,user=self.request.user)
+            return discussion
+        except:
+            return 1
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance == 0:
+            return Response({
+                            'status':False,
+                            'msg':"يرجى إرسال المعرف (id) الخاص بالعنصر المراد حذفه",
+                            },
+                            status=400
+                           )
+        if instance == 1 :
+            return Response({
+                            'status':False,
+                            'msg':"العنصر الذي تحاول حذفه غير موجود",
+                            },
+                            status=404
+                           )
+        else:
+            # self.check_object_permissions(self.request, instance)
+            self.perform_destroy(instance)
+            return Response({
+                            'status': True,
+                            'msg': "تم حذف العنصر بنجاح",
+                            },
+                            status=201
+                            )

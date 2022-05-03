@@ -28,9 +28,19 @@ class Question(models.Model):
         from .serializers import DiscussionSerializer
         return DiscussionSerializer(question_discussions,many=True).data
 class Discussion(models.Model):
+    def upload_discussion_file(self, filename):
+        return 'discussions/files/{date}/{user}/{filename}'.format(
+            date=datetime.today().date(),
+            user=self.user.email_as_string(),
+            filename=filename
+        )
     question = models.ForeignKey('web.Question',on_delete= models.CASCADE)
     user = models.ForeignKey('user_auth.User', on_delete=models.CASCADE)
     body = models.TextField(null=True,blank=True)
+    file = models.FileField(
+        upload_to=upload_discussion_file,
+        default='/default_images/default_image_for_all_models.jpeg'
+    )
     created_at = models.DateTimeField(_('date created'), auto_now_add=True)
 
     def __str__(self):
@@ -92,12 +102,12 @@ class QuestionFile(models.Model):
     def __str__(self):
         return self.question.patient.user.email
 
-class DiscussionFile(models.Model):
-    discussion = models.ForeignKey('web.Discussion',on_delete= models.CASCADE)
-    file = models.ForeignKey('web.File',on_delete= models.CASCADE)
-
-    def __str__(self):
-        return self.discussion.user.email
+# class DiscussionFile(models.Model):
+#     discussion = models.ForeignKey('web.Discussion',on_delete= models.CASCADE)
+#     file = models.ForeignKey('web.File',on_delete= models.CASCADE)
+#
+#     def __str__(self):
+#         return self.discussion.user.email
 
 class BlogFile(models.Model):
     blog = models.ForeignKey('web.Blog',on_delete= models.CASCADE)
