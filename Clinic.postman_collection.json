@@ -18,7 +18,7 @@
 							"formdata": [
 								{
 									"key": "email",
-									"value": "Patient@patient.com",
+									"value": "Doctor@doctor.com",
 									"description": "Patient@patient.com",
 									"type": "text"
 								},
@@ -1205,7 +1205,7 @@
 									}
 								],
 								"url": {
-									"raw": "http://127.0.0.1:8000/get/question/discussions/?question_id=8",
+									"raw": "http://127.0.0.1:8000/get/question/discussions/?question_id=46",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -1223,7 +1223,243 @@
 									"query": [
 										{
 											"key": "question_id",
-											"value": "8"
+											"value": "46"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Blog API's",
+					"item": [
+						{
+							"name": "Create Blog",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token 7db75bebcea8b58848e82484c16955ff93113063680ff9e51369e6366e0c24b3",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "ww",
+											"type": "text"
+										},
+										{
+											"key": "body",
+											"value": "www",
+											"type": "text"
+										},
+										{
+											"key": "files",
+											"type": "file",
+											"src": [
+												"/home/karim/Downloads/images/default_image_for_all_models.jpeg",
+												"/home/karim/Downloads/images/test3.jpg",
+												"/home/karim/Downloads/images/test5.jpg",
+												"/home/karim/Downloads/images/test6.jpeg",
+												"/home/karim/Downloads/images/test7.jpeg",
+												"/home/karim/Downloads/images/test9.png"
+											]
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/create/blog/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"create",
+										"blog",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Blog",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token 7db75bebcea8b58848e82484c16955ff93113063680ff9e51369e6366e0c24b3",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/delete/blog/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"delete",
+										"blog",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit Blog",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token 7db75bebcea8b58848e82484c16955ff93113063680ff9e51369e6366e0c24b3",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "2",
+											"type": "text"
+										},
+										{
+											"key": "title",
+											"value": "qasfasf",
+											"type": "text"
+										},
+										{
+											"key": "body",
+											"value": "5555asfasf",
+											"type": "text"
+										},
+										{
+											"key": "files",
+											"type": "file",
+											"src": [
+												"/home/karim/Downloads/images/test3.jpg",
+												"/home/karim/Downloads/images/test4.jpg",
+												"/home/karim/Downloads/images/test5.jpg",
+												"/home/karim/Downloads/images/test6.jpeg"
+											]
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/edit/blog/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"edit",
+										"blog",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Blog Detials",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token 7db75bebcea8b58848e82484c16955ff93113063680ff9e51369e6366e0c24b3",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/get/blog/details/?id=2",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"get",
+										"blog",
+										"details",
+										""
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Blog Comments",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/get/blog/comments/?blog_id=2",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"get",
+										"blog",
+										"comments",
+										""
+									],
+									"query": [
+										{
+											"key": "blog_id",
+											"value": "2"
 										}
 									]
 								}
@@ -1369,6 +1605,141 @@
 									"path": [
 										"delete",
 										"discussion",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Comment API's",
+					"item": [
+						{
+							"name": "Create Comment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "blog",
+											"value": "2",
+											"type": "text"
+										},
+										{
+											"key": "body",
+											"value": "www",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/create/comment/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"create",
+										"comment",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit Comment",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "5",
+											"type": "text"
+										},
+										{
+											"key": "body",
+											"value": "88asfasf",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/edit/comment/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"edit",
+										"comment",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Comment",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "3",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/delete/comment/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"delete",
+										"comment",
 										""
 									]
 								}

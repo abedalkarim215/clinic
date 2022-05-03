@@ -8,25 +8,22 @@ from .models import (
     File,
     QuestionFile,
     Discussion,
+    BlogFile,
+    Blog,
+    Comment,
 )
 
-
-class DepartmentSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Department
-        fields = ['id','name']
 
 def get_upload_file_path(type, filename):
     print(datetime.today().date())
     return 'files/{date}/{type}/{filename}'.format(
-        # user=patient.user.email_as_string(),
         date=datetime.today().date(),
         type=type,
         filename=filename
     )
 
-def upload_files_for_question(files,question):
+
+def upload_files(files, model_name, model_object):
     for file in files:
         file_type = file.content_type.split('/')[0]
         fs = FileSystemStorage()
@@ -39,26 +36,56 @@ def upload_files_for_question(files,question):
             path=file_url
         )
         if file_object:
-            question_file = QuestionFile.objects.create(
-                question=question,
-                file=file_object,
-            )
+            if model_name == 'Question':
+                question_file = QuestionFile.objects.create(
+                    question=model_object,
+                    file=file_object,
+                )
+            elif model_name == 'Blog':
+                blog_file = BlogFile.objects.create(
+                    blog=model_object,
+                    file=file_object,
+                )
         else:
-            print(f"ERROR - > File did not uploades :{file.name}")
+            print(f"ERROR - > File did not uploaded sucessfuly :{file.name}")
+
+
+def get_upload_discussion_file_path(user, filename):
+    return 'discussions/files/{date}/{user}/{filename}'.format(
+        date=datetime.today().date(),
+        user=user.email_as_string(),
+        filename=filename
+    )
+
+
+class DepartmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = ['id', 'name']
+
 
 class QuestionSerializer(serializers.ModelSerializer):
-    files = serializers.ListField(child=serializers.FileField(),required=False)
+    files = serializers.ListField(child=serializers.FileField(), required=False)
+    patient_image = serializers.SerializerMethodField('get_patient_image_full_url')
+
+    def get_patient_image_full_url(self, obj):
+        patient_image = obj.patient_image()
+        request = self.context.get('request')
+        return request.build_absolute_uri(patient_image)
 
     class Meta:
         model = Question
         fields = [
             'id',
+            'patient',
+            'patient_image',
+            'patient_full_name',
             'title',
             'body',
             'to_doctor',
             'department',
             'files',
-            # 'discussions',
+            'discussions_count',
             'created_at',
         ]
         extra_kwargs = {
@@ -68,7 +95,14 @@ class QuestionSerializer(serializers.ModelSerializer):
             'department': {'required': False},
             'files': {'required': False},
         }
-        read_only_fields = ['id','created_at']
+        read_only_fields = [
+            'id',
+            'created_at',
+            'patient',
+            'patient_image',
+            'patient_full_name',
+            'discussions_count',
+        ]
 
     def get_fields(self, *args, **kwargs):
         # fields = super(QuestionSerializer, self).get_fields(*args, **kwargs)
@@ -78,6 +112,7 @@ class QuestionSerializer(serializers.ModelSerializer):
             fields['title'].required = False
             fields['body'].required = False
         return fields
+
     def update(self, instance, validated_data):
         for attr, value in validated_data.items():
             if attr in ['files']:
@@ -85,7 +120,7 @@ class QuestionSerializer(serializers.ModelSerializer):
                 old_question_files = instance.questionfile_set.all().delete()
 
                 # upload new question files
-                upload_files_for_question(value,instance)
+                upload_files(files=value, model_name='Question', model_object=instance)
             else:
                 setattr(instance, attr, value)
         instance.save()
@@ -108,47 +143,40 @@ class QuestionSerializer(serializers.ModelSerializer):
         )
         if question:
             files = validated_data['files'] if 'files' in validated_data else []
-            upload_files_for_question(files, question)
+            upload_files(files=files, model_name='Question', model_object=question)
             return question
         else:
             msg = 'لم يتم الإنشاء.'
             raise serializers.ValidationError(msg, code='authorization')
 
-class QuestionDiscussionsSerializer(serializers.ModelSerializer):
+
+class DiscussionSerializer(serializers.ModelSerializer):
+    user_image = serializers.SerializerMethodField('get_user_image_full_url')
+
+    def get_user_image_full_url(self, obj):
+        user_image = obj.user_image()
+        request = self.context.get('request')
+        return request.build_absolute_uri(user_image)
+
     class Meta:
         model = Discussion
         fields = [
             'id',
             'user',
-            'body',
-            'file',
-            'created_at',
-        ]
-        read_only_fields = ['id','created_at']
-
-
-def get_upload_discussion_file_path(user, filename):
-    return 'discussions/files/{date}/{user}/{filename}'.format(
-        date=datetime.today().date(),
-        user=user.email_as_string(),
-        filename=filename
-    )
-class DiscussionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Discussion
-        fields = [
-            'id',
+            'user_image',
+            'user_full_name',
             'question',
             'body',
             'file',
             'created_at',
         ]
-        read_only_fields = ['id', 'created_at']
+        read_only_fields = ['id', 'created_at', 'user', 'user_image', 'user_full_name']
         extra_kwargs = {
             'question': {'required': True},
             'body': {'required': True},
             'file': {'required': False},
         }
+
     def get_fields(self, *args, **kwargs):
         fields = super(DiscussionSerializer, self).get_fields(*args, **kwargs)
         request = self.context.get('request', None)
@@ -157,6 +185,7 @@ class DiscussionSerializer(serializers.ModelSerializer):
             fields['question'].read_only = True
             fields['body'].required = False
         return fields
+
     def create(self, validated_data):
         user = self.context['request'].user
         question = validated_data['question']
@@ -184,3 +213,132 @@ class DiscussionSerializer(serializers.ModelSerializer):
             msg = 'لم يتم الإنشاء.'
             raise serializers.ValidationError(msg, code='authorization')
 
+
+class BlogSerializer(serializers.ModelSerializer):
+    files = serializers.ListField(child=serializers.FileField(), required=False)
+    doctor_image = serializers.SerializerMethodField('get_doctor_image_full_url')
+
+    def get_doctor_image_full_url(self, obj):
+        doctor_image = obj.doctor_image()
+        request = self.context.get('request')
+        return request.build_absolute_uri(doctor_image)
+
+    class Meta:
+        model = Blog
+        fields = [
+            'id',
+            'doctor',
+            'doctor_image',
+            'doctor_full_name',
+            'title',
+            'body',
+            'files',
+            'likes_count',
+            'comments_count',
+            'created_at',
+        ]
+        extra_kwargs = {
+            'title': {'required': True},
+            'body': {'required': True},
+            'files': {'required': False},
+        }
+        read_only_fields = [
+            'id',
+            'created_at',
+            'doctor',
+            'doctor_image',
+            'doctor_full_name',
+            'likes_count',
+            'comments_count',
+        ]
+
+    def get_fields(self, *args, **kwargs):
+        fields = super(BlogSerializer, self).get_fields(*args, **kwargs)
+        request = self.context.get('request', None)
+        if request and getattr(request, 'method', None) == "PUT":
+            fields['title'].required = False
+            fields['body'].required = False
+        return fields
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            if attr in ['files']:
+                # delete old blog files
+                old_blog_files = instance.blogfile_set.all().delete()
+
+                # upload new blog files
+                upload_files(files=value, model_name='Blog', model_object=instance)
+            else:
+                setattr(instance, attr, value)
+        instance.save()
+        return instance
+
+    def create(self, validated_data):
+
+        doctor = self.context['request'].user.doctor
+        title = validated_data['title']
+        body = validated_data['body']
+
+        blog = Blog.objects.create(
+            doctor=doctor,
+            title=title,
+            body=body,
+        )
+        if blog:
+            files = validated_data['files'] if 'files' in validated_data else []
+            upload_files(files=files, model_name='Blog', model_object=blog)
+            return blog
+        else:
+            msg = 'لم يتم الإنشاء.'
+            raise serializers.ValidationError(msg, code='authorization')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    user_image = serializers.SerializerMethodField('get_user_image_full_url')
+
+    def get_user_image_full_url(self, obj):
+        user_image = obj.user_image()
+        request = self.context.get('request')
+        return request.build_absolute_uri(user_image)
+
+    class Meta:
+        model = Comment
+        fields = [
+            'id',
+            'user',
+            'user_image',
+            'user_full_name',
+            'blog',
+            'body',
+            'created_at',
+        ]
+        read_only_fields = ['id', 'created_at', 'user', 'user_image', 'user_full_name']
+        extra_kwargs = {
+            'blog': {'required': True},
+            'body': {'required': True},
+        }
+
+    def get_fields(self, *args, **kwargs):
+        fields = super(CommentSerializer, self).get_fields(*args, **kwargs)
+        request = self.context.get('request', None)
+        if request and getattr(request, 'method', None) == "PUT":
+            fields['blog'].required = False
+            fields['blog'].read_only = True
+        return fields
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        blog = validated_data['blog']
+        body = validated_data['body']
+
+        comment = Comment.objects.create(
+            blog=blog,
+            user=user,
+            body=body,
+        )
+
+        if comment:
+            return comment
+        else:
+            msg = 'لم يتم الإنشاء.'
+            raise serializers.ValidationError(msg, code='authorization')

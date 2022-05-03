@@ -9,10 +9,11 @@ from ..models import (
     WorkExperience,
 )
 
+
 class DoctorEditGeneralInfo(generics.UpdateAPIView):
     from ..serializers import DoctorGeneralInfoSerializer
     serializer_class = DoctorGeneralInfoSerializer
-    permission_classes = [IsAuthenticated,IsDoctor]
+    permission_classes = [IsAuthenticated, IsDoctor]
     queryset = User.objects.all()
 
     def get_object(self):
@@ -25,7 +26,7 @@ class DoctorEditGeneralInfo(generics.UpdateAPIView):
 class DoctorEditPersonalInfo(generics.UpdateAPIView):
     from ..serializers import DoctorPersonalInfoSerializer
     serializer_class = DoctorPersonalInfoSerializer
-    permission_classes = [IsAuthenticated,IsDoctor]
+    permission_classes = [IsAuthenticated, IsDoctor]
     queryset = Doctor.objects.all()
 
     def get_object(self):
@@ -34,10 +35,11 @@ class DoctorEditPersonalInfo(generics.UpdateAPIView):
         self.check_object_permissions(self.request, obj.user)
         return obj
 
+
 class DoctorEditEducationInfo(generics.UpdateAPIView):
     from ..serializers import DoctorEducationInfoSerializer
     serializer_class = DoctorEducationInfoSerializer
-    permission_classes = [IsAuthenticated,IsDoctor]
+    permission_classes = [IsAuthenticated, IsDoctor]
     queryset = Education.objects.all()
 
     def get_object(self):
@@ -52,10 +54,11 @@ class DoctorEditEducationInfo(generics.UpdateAPIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
+
 class DoctorEditWorkExperience(generics.UpdateAPIView):
     from ..serializers import DoctorWorkExperienceSerializer
     serializer_class = DoctorWorkExperienceSerializer
-    permission_classes = [IsAuthenticated,IsDoctor]
+    permission_classes = [IsAuthenticated, IsDoctor]
     lookup_field = 'id'
 
     def get_object(self):
@@ -76,18 +79,18 @@ class DoctorEditWorkExperience(generics.UpdateAPIView):
         instance = self.get_object()
         if instance == 0:
             return Response({
-                            'status':False,
-                            'msg':"يرجى إرسال المعرف (id) الخاص بالعنصر المراد التعديل عليه",
-                            },
-                            status=400
-                           )
+                'status': False,
+                'msg': "يرجى إرسال المعرف (id) الخاص بالعنصر المراد التعديل عليه",
+            },
+                status=400
+            )
         if instance == 1:
             return Response({
-                            'status':False,
-                            'msg':"العنصر الذي تحاول التعديل عليه غير موجود",
-                            },
-                            status=404
-                           )
+                'status': False,
+                'msg': "العنصر الذي تحاول التعديل عليه غير موجود",
+            },
+                status=404
+            )
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
@@ -96,14 +99,15 @@ class DoctorEditWorkExperience(generics.UpdateAPIView):
             instance._prefetched_objects_cache = {}
         return Response(serializer.data)
 
+
 class DoctorCreateWorkExperience(generics.CreateAPIView):
     from ..serializers import DoctorWorkExperienceSerializer
     serializer_class = DoctorWorkExperienceSerializer
-    permission_classes = [IsAuthenticated,IsDoctor]
+    permission_classes = [IsAuthenticated, IsDoctor]
 
 
 class DoctorDeleteWorkExperience(generics.DestroyAPIView):
-    permission_classes = [IsAuthenticated,IsDoctor]
+    permission_classes = [IsAuthenticated, IsDoctor]
     lookup_field = 'id'
 
     def get_object(self):
@@ -112,32 +116,35 @@ class DoctorDeleteWorkExperience(generics.DestroyAPIView):
         except:
             return 0
         try:
-            work_experience = WorkExperience.objects.get(pk=work_experience_id,doctor=self.request.user.doctor)
+            work_experience = WorkExperience.objects.get(pk=work_experience_id, doctor=self.request.user.doctor)
             return work_experience
         except:
             return 1
+
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance == 0:
             return Response({
-                            'status':False,
-                            'msg':"يرجى إرسال المعرف (id) الخاص بالعنصر المراد حذفه",
-                            },
-                            status=400
-                           )
-        if instance == 1 :
+                'status': False,
+                'msg': "يرجى إرسال المعرف (id) الخاص بالعنصر المراد حذفه",
+            },
+                status=400
+            )
+        elif instance == 1:
             return Response({
-                            'status':False,
-                            'msg':"العنصر الذي تحاول حذفه غير موجود",
-                            },
-                            status=404
-                           )
+                'status': False,
+                'msg': "العنصر الذي تحاول حذفه غير موجود",
+            },
+                status=404
+            )
         else:
+            instance_id = instance.id
             self.check_object_permissions(self.request, instance)
             self.perform_destroy(instance)
             return Response({
-                            'status': True,
-                            'msg': "تم حذف العنصر بنجاح",
-                            },
-                            status=201
-                            )
+                'status': True,
+                'msg': "تم حذف العنصر بنجاح",
+                'id': instance_id,
+            },
+                status=201
+            )
