@@ -987,7 +987,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token 3203f275e5c8931a7507e4bb682a87edfade3374bf3ec0c8055a59f20df69e1e",
+										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
 										"type": "text"
 									}
 								],
@@ -1019,6 +1019,8 @@
 											"key": "files",
 											"type": "file",
 											"src": [
+												"/home/karim/Downloads/images/test4.jpg",
+												"/home/karim/Downloads/images/test5.jpg",
 												"/home/karim/Downloads/images/test6.jpeg",
 												"/home/karim/Downloads/images/test7.jpeg",
 												"/home/karim/Downloads/images/test8.jpeg"
@@ -1038,6 +1040,46 @@
 									"port": "8000",
 									"path": [
 										"create",
+										"question",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Question",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "43",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/delete/question/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"delete",
 										"question",
 										""
 									]
@@ -1121,12 +1163,12 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token 3203f275e5c8931a7507e4bb682a87edfade3374bf3ec0c8055a59f20df69e1e",
+										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
 										"type": "text"
 									}
 								],
 								"url": {
-									"raw": "http://127.0.0.1:8000/get/question/details/?id=8",
+									"raw": "http://127.0.0.1:8000/get/question/details/?id=46",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -1144,7 +1186,7 @@
 									"query": [
 										{
 											"key": "id",
-											"value": "8"
+											"value": "46"
 										}
 									]
 								}
@@ -1158,7 +1200,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token 3203f275e5c8931a7507e4bb682a87edfade3374bf3ec0c8055a59f20df69e1e",
+										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
 										"type": "text"
 									}
 								],
@@ -1183,6 +1225,151 @@
 											"key": "question_id",
 											"value": "8"
 										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Discussion API's",
+					"item": [
+						{
+							"name": "Create Discussion",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "question",
+											"value": "46",
+											"type": "text"
+										},
+										{
+											"key": "body",
+											"value": "www",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/home/karim/Downloads/images/test9.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/create/discussion/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"create",
+										"discussion",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit Discussion",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "16",
+											"type": "text"
+										},
+										{
+											"key": "body",
+											"value": "88asfasf",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/home/karim/Downloads/images/test10.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/edit/discussion/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"edit",
+										"discussion",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Discussion",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "3",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/delete/discussion/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"delete",
+										"discussion",
+										""
 									]
 								}
 							},
