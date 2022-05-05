@@ -18,15 +18,22 @@ from .views import (
     CreateComment,
     EditComment,
     DeleteComment,
+    BlogLike,
+    DepartmentQuestions,
+    DepartmentsDoctors,
+    PersonalQuestions,
 )
 
 urlpatterns = [
     path('media/files/<path:file>', dummy_secure_media_directory),
 
     path('get/departments/', Departments.as_view()),
+    path('get/departments/doctors/', DepartmentsDoctors.as_view()),
 
     path('get/question/details/', QuestionDetails.as_view()),
     path('get/question/discussions/', QuestionDiscussions.as_view()),
+    path('get/department/questions/', DepartmentQuestions.as_view()),
+    path('get/personal/questions/', PersonalQuestions.as_view()),
 
     path('create/question/', CreateQuestion.as_view()),
     path('edit/question/', EditQuestion.as_view()),
@@ -45,4 +52,7 @@ urlpatterns = [
     path('create/comment/', CreateComment.as_view()),
     path('edit/comment/', EditComment.as_view()),
     path('delete/comment/', DeleteComment.as_view()),
+
+    path('blog/like/', BlogLike.as_view()),
+
 ]

@@ -669,3 +669,81 @@ class DeleteComment(generics.DestroyAPIView):
             },
                 status=201
             )
+
+
+class BlogLike(generics.CreateAPIView):
+    from .serializers import BlogLikeSerializer
+    serializer_class = BlogLikeSerializer
+    permission_classes = [IsAuthenticated, IsDoctor | IsPatient]
+
+
+class DepartmentQuestions(generics.ListAPIView):
+    from .serializers import QuestionSerializer
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticated, IsDoctor | IsPatient]
+
+    def get_queryset(self):
+        try:
+            department_id = self.request.GET["department_id"]
+            # dumm implementation i will change it later
+            if not department_id == 'all':
+                try:
+                    department_id = int(department_id)
+                except:
+                    return 1
+        except:
+            return 0
+        if department_id == 'all':
+            department_questions = Question.objects.all()
+        elif not (department_id > 0):
+            return 1
+        else:
+            if not Department.objects.filter(id=department_id).exists():
+                return 1
+            else:
+                department_questions = Question.objects.filter(department_id=department_id)
+        return department_questions
+
+    def list(self, request, *args, **kwargs):
+        query = self.get_queryset()
+        if query == 0:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "يرجى إرسال المعرف (id) الخاص بالعنصر",
+                },
+                status=400
+            )
+        if query == 1:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "القسم الذي تحاول عرض الأسئلة الخاصة به غير موجود",
+                },
+                status=404
+            )
+        queryset = self.filter_queryset(query)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class DepartmentsDoctors(generics.ListAPIView):
+    from .serializers import DepartmentDoctorsSerializer
+    serializer_class = DepartmentDoctorsSerializer
+    permission_classes = [IsAuthenticated, IsDoctor | IsPatient]
+
+    def get_queryset(self):
+        return Department.objects.all()
+
+
+class PersonalQuestions(generics.ListAPIView):
+    from .serializers import QuestionSerializer
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticated, IsPatient]
+
+    def get_queryset(self):
+        return Question.objects.filter(patient=self.request.user.patient)

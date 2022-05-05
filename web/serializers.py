@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.core.files.storage import FileSystemStorage
 from datetime import datetime
+from rest_framework.response import Response
 
 from .models import (
     Department,
@@ -11,7 +12,9 @@ from .models import (
     BlogFile,
     Blog,
     Comment,
+    BlogLike,
 )
+from user_auth.models import Doctor, Patient
 
 
 def get_upload_file_path(type, filename):
@@ -64,9 +67,32 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
+class DepartmentDoctorsSerializer(serializers.ModelSerializer):
+    doctors = serializers.SerializerMethodField('get_doctors_details')
+
+    def get_doctors_details(self, obj):
+        department_doctors = obj.doctor_set.all()
+        return DoctorBasicDetailsSerializer(department_doctors, many=True, context=self.context).data
+
+    class Meta:
+        model = Department
+        fields = ['id', 'name', 'doctors']
+
+
 class QuestionSerializer(serializers.ModelSerializer):
     files = serializers.ListField(child=serializers.FileField(), required=False)
-    patient_image = serializers.SerializerMethodField('get_patient_image_full_url')
+    patient_details = serializers.SerializerMethodField('get_patient_details')
+    to_doctor_details = serializers.SerializerMethodField('get_to_doctor_details')
+    department_details = serializers.SerializerMethodField('get_department_details')
+
+    def get_to_doctor_details(self, obj):
+        return DoctorBasicDetailsSerializer(obj.to_doctor, context=self.context).data
+
+    def get_patient_details(self, obj):
+        return PatientBasicDetailsSerializer(obj.patient, context=self.context).data
+
+    def get_department_details(self, obj):
+        return DepartmentSerializer(obj.department, context=self.context).data
 
     def get_patient_image_full_url(self, obj):
         patient_image = obj.patient_image()
@@ -77,13 +103,11 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = [
             'id',
-            'patient',
-            'patient_image',
-            'patient_full_name',
+            'patient_details',
             'title',
             'body',
-            'to_doctor',
-            'department',
+            'to_doctor_details',
+            'department_details',
             'files',
             'discussions_count',
             'created_at',
@@ -216,20 +240,16 @@ class DiscussionSerializer(serializers.ModelSerializer):
 
 class BlogSerializer(serializers.ModelSerializer):
     files = serializers.ListField(child=serializers.FileField(), required=False)
-    doctor_image = serializers.SerializerMethodField('get_doctor_image_full_url')
+    doctor_details = serializers.SerializerMethodField('get_doctor_details')
 
-    def get_doctor_image_full_url(self, obj):
-        doctor_image = obj.doctor_image()
-        request = self.context.get('request')
-        return request.build_absolute_uri(doctor_image)
+    def get_doctor_details(self, obj):
+        return DoctorBasicDetailsSerializer(obj.doctor, context=self.context).data
 
     class Meta:
         model = Blog
         fields = [
             'id',
-            'doctor',
-            'doctor_image',
-            'doctor_full_name',
+            'doctor_details',
             'title',
             'body',
             'files',
@@ -342,3 +362,112 @@ class CommentSerializer(serializers.ModelSerializer):
         else:
             msg = 'لم يتم الإنشاء.'
             raise serializers.ValidationError(msg, code='authorization')
+
+
+class BlogLikeSerializer(serializers.ModelSerializer):
+    like = serializers.ChoiceField([0, 1])
+
+    # def validate_blog(self, value):
+    #     if not value:
+    #         raise serializers.ValidationError("foo field required.")
+    #     if True:
+    #         raise serializers.ValidationError("foo limit reached.")
+    #     return value
+
+    class Meta:
+        model = BlogLike
+        fields = [
+            'blog',
+            'like',
+        ]
+        extra_kwargs = {
+            'blog': {'required': True},
+            'like': {'required': True},
+        }
+
+    def create(self, validated_data):
+
+        user = self.context['request'].user
+        blog = validated_data['blog']
+        like_status = validated_data['like']
+
+        if like_status == 0:
+            try:
+                blog_like = BlogLike.objects.get(blog=blog, user=user).delete()
+            except:
+                msg = 'لا يوجد إعجاب لهذا المنشور لإزالته'
+                return Response(
+                    {
+                        'status': False,
+                        'msg': msg,
+                    },
+                    status=400
+                )
+        elif like_status == 1:
+            blog_like, created = BlogLike.objects.get_or_create(blog=blog, user=user)
+            print(blog_like)
+            print(created)
+            if blog_like and created:
+                return Response(
+                    {
+                        'status': True,
+                        'msg': 'تم إنشاء الإعجاب بنجاح',
+                    },
+                    status=201
+                )
+            elif blog_like and not created:
+                msg = 'لقد تم الإعجاب بهذا المنشور مسبقا ، لا يمكن الإعجاب مرة أخرى'
+                return Response(
+                    {
+                        'status': False,
+                        'msg': msg,
+                    },
+                    status=400
+                )
+            else:
+                msg = 'لم يتم إنشاء الإعجاب.'
+                return Response(
+                    {
+                        'status': False,
+                        'msg': msg,
+                    },
+                    status=500
+                )
+        else:
+            raise serializers.ValidationError("ERROR", code='authorization')
+
+
+class PatientBasicDetailsSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField('get_patient_image_full_url')
+
+    def get_patient_image_full_url(self, obj):
+        patient_image = obj.user.image.url
+        request = self.context.get('request')
+        return request.build_absolute_uri(patient_image)
+
+    class Meta:
+        model = Patient
+        fields = [
+            'id',
+            'full_name',
+            'image',
+        ]
+        read_only_fields = ['id']
+
+
+class DoctorBasicDetailsSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField('get_doctor_image_full_url')
+
+    def get_doctor_image_full_url(self, obj):
+        doctor_image = obj.user.image.url
+        request = self.context.get('request')
+        return request.build_absolute_uri(doctor_image)
+
+    class Meta:
+        model = Doctor
+        fields = [
+            'id',
+            'full_name',
+            'image',
+        ]
+        read_only_fields = ['id']

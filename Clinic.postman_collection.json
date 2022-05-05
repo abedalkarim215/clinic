@@ -18,7 +18,7 @@
 							"formdata": [
 								{
 									"key": "email",
-									"value": "Doctor@doctor.com",
+									"value": "Patient@patient.com",
 									"description": "Patient@patient.com",
 									"type": "text"
 								},
@@ -1229,6 +1229,75 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Get Department Questions",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token 1267a2683d5023bde5a3d6c6029722438bc8576dcae90d36ec5053fe078ba9c5",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/get/department/questions/?department_id=all",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"get",
+										"department",
+										"questions",
+										""
+									],
+									"query": [
+										{
+											"key": "department_id",
+											"value": "all",
+											"description": "id - all"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Personal Questions",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token 586ad74c9617ddc11b7f31464749baa942b31625221d4b2d2d010c72c958fcba",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/get/personal/questions/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"get",
+										"personal",
+										"questions",
+										""
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
@@ -1399,7 +1468,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token 7db75bebcea8b58848e82484c16955ff93113063680ff9e51369e6366e0c24b3",
+										"value": "Token 1267a2683d5023bde5a3d6c6029722438bc8576dcae90d36ec5053fe078ba9c5",
 										"type": "text"
 									}
 								],
@@ -1461,6 +1530,51 @@
 											"key": "blog_id",
 											"value": "2"
 										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Blog Like",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token 7f16b901aa280a94cc72834492243d70978948b29342f6d9b1c23c4d32641813",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "blog",
+											"value": "5",
+											"type": "text"
+										},
+										{
+											"key": "like",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/blog/like/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"blog",
+										"like",
+										""
 									]
 								}
 							},
@@ -1749,34 +1863,70 @@
 					]
 				},
 				{
-					"name": "Get All Departments",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Token dc5e18194d60d6741fddbf42e68e3e244971e12a4842dbdfe285a36f2bcc02f3",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://127.0.0.1:8000/get/departments/",
-							"protocol": "http",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "8000",
-							"path": [
-								"get",
-								"departments",
-								""
-							]
+					"name": "Department API's",
+					"item": [
+						{
+							"name": "Get All Departments",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token dc5e18194d60d6741fddbf42e68e3e244971e12a4842dbdfe285a36f2bcc02f3",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/get/departments/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"get",
+										"departments",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Departments Doctors",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token 1267a2683d5023bde5a3d6c6029722438bc8576dcae90d36ec5053fe078ba9c5",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/get/departments/doctors/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"get",
+										"departments",
+										"doctors",
+										""
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				}
 			]
 		}
