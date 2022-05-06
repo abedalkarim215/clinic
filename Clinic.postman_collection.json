@@ -18,7 +18,7 @@
 							"formdata": [
 								{
 									"key": "email",
-									"value": "Patient@patient.com",
+									"value": "Doctor@doctor.com",
 									"description": "Patient@patient.com",
 									"type": "text"
 								},
@@ -987,7 +987,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"value": "Token b9a10829715d6e1089d31e29628e21d801acc0d38fc0c064b27d1e60c9a22f12",
 										"type": "text"
 									}
 								],
@@ -1007,7 +1007,6 @@
 										{
 											"key": "to_doctor",
 											"value": "1",
-											"description": "IMG Must be a file",
 											"type": "text"
 										},
 										{
@@ -1019,11 +1018,23 @@
 											"key": "files",
 											"type": "file",
 											"src": [
+												"/home/karim/Downloads/images/011.mp3",
+												"/home/karim/Downloads/images/default_image_for_all_models.jpeg",
+												"/home/karim/Downloads/images/default_image_for_dealer_and_customer_models.png",
+												"/home/karim/Downloads/images/img_masthead.gif",
+												"/home/karim/Downloads/images/Nature Beautiful short video 720p HD.mp4",
+												"/home/karim/Downloads/images/Problem Set 01.pdf",
+												"/home/karim/Downloads/images/test0.jpeg",
+												"/home/karim/Downloads/images/test3.jpg",
 												"/home/karim/Downloads/images/test4.jpg",
 												"/home/karim/Downloads/images/test5.jpg",
 												"/home/karim/Downloads/images/test6.jpeg",
 												"/home/karim/Downloads/images/test7.jpeg",
-												"/home/karim/Downloads/images/test8.jpeg"
+												"/home/karim/Downloads/images/test8.jpeg",
+												"/home/karim/Downloads/images/test9.png",
+												"/home/karim/Downloads/images/test10.jpg",
+												"/home/karim/Downloads/images/عبد الكريم معين  df  سي 458.jpg",
+												"/home/karim/Downloads/images/عيد.jpg"
 											]
 										}
 									]
@@ -1163,12 +1174,12 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"value": "Token b9a10829715d6e1089d31e29628e21d801acc0d38fc0c064b27d1e60c9a22f12",
 										"type": "text"
 									}
 								],
 								"url": {
-									"raw": "http://127.0.0.1:8000/get/question/details/?id=46",
+									"raw": "http://127.0.0.1:8000/get/question/details/?id=54",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -1186,7 +1197,7 @@
 									"query": [
 										{
 											"key": "id",
-											"value": "46"
+											"value": "54"
 										}
 									]
 								}
@@ -1200,7 +1211,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"value": "Token b9a10829715d6e1089d31e29628e21d801acc0d38fc0c064b27d1e60c9a22f12",
 										"type": "text"
 									}
 								],
@@ -1311,7 +1322,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token 7db75bebcea8b58848e82484c16955ff93113063680ff9e51369e6366e0c24b3",
+										"value": "Token b8c28a0dccc35996110207fb3b841901275ed9b618efe6638eb07f530aa94ba9",
 										"type": "text"
 									}
 								],
@@ -1332,12 +1343,9 @@
 											"key": "files",
 											"type": "file",
 											"src": [
-												"/home/karim/Downloads/images/default_image_for_all_models.jpeg",
-												"/home/karim/Downloads/images/test3.jpg",
+												"/home/karim/Downloads/images/test4.jpg",
 												"/home/karim/Downloads/images/test5.jpg",
-												"/home/karim/Downloads/images/test6.jpeg",
-												"/home/karim/Downloads/images/test7.jpeg",
-												"/home/karim/Downloads/images/test9.png"
+												"/home/karim/Downloads/images/test8.jpeg"
 											]
 										}
 									]
@@ -1505,7 +1513,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"value": "Token b9a10829715d6e1089d31e29628e21d801acc0d38fc0c064b27d1e60c9a22f12",
 										"type": "text"
 									}
 								],
@@ -1872,7 +1880,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token dc5e18194d60d6741fddbf42e68e3e244971e12a4842dbdfe285a36f2bcc02f3",
+										"value": "Token b9a10829715d6e1089d31e29628e21d801acc0d38fc0c064b27d1e60c9a22f12",
 										"type": "text"
 									}
 								],
@@ -1902,7 +1910,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token 1267a2683d5023bde5a3d6c6029722438bc8576dcae90d36ec5053fe078ba9c5",
+										"value": "Token b9a10829715d6e1089d31e29628e21d801acc0d38fc0c064b27d1e60c9a22f12",
 										"type": "text"
 									}
 								],

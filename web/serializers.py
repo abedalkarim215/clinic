@@ -26,12 +26,29 @@ def get_upload_file_path(type, filename):
     )
 
 
+import string
+import random
+
+ascii = set(string.printable)
+en_ch = list(string.ascii_lowercase)
+
+
+def remove_non_ascii(s):
+    a = ''
+    for i in s:
+        if i in ascii:
+            a += str(i)
+        else:
+            a += str(random.choice(list(en_ch)))
+    return a
+
+
 def upload_files(files, model_name, model_object):
     for file in files:
         file_type = file.content_type.split('/')[0]
         fs = FileSystemStorage()
-        filename = fs.save(get_upload_file_path(file_type, file.name), file)
-        print(file.content_type)
+        file_name_after_mod = remove_non_ascii(str(file.name).replace(' ', '_').lower())
+        filename = fs.save(get_upload_file_path(file_type, file_name_after_mod), file)
         uploaded_file_url = fs.url(filename)
         file_url = str(uploaded_file_url)[7:]
         file_object = File.objects.create(
@@ -67,6 +84,48 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
+class FileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = File
+        fields = ['type', 'path']
+
+
+class PatientBasicDetailsSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField('get_patient_image_full_url')
+
+    def get_patient_image_full_url(self, obj):
+        patient_image = obj.user.image.url
+        request = self.context.get('request')
+        return request.build_absolute_uri(patient_image)
+
+    class Meta:
+        model = Patient
+        fields = [
+            'id',
+            'full_name',
+            'image',
+        ]
+        read_only_fields = ['id']
+
+
+class DoctorBasicDetailsSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField('get_doctor_image_full_url')
+
+    def get_doctor_image_full_url(self, obj):
+        doctor_image = obj.user.image.url
+        request = self.context.get('request')
+        return request.build_absolute_uri(doctor_image)
+
+    class Meta:
+        model = Doctor
+        fields = [
+            'id',
+            'full_name',
+            'image',
+        ]
+        read_only_fields = ['id']
+
+
 class DepartmentDoctorsSerializer(serializers.ModelSerializer):
     doctors = serializers.SerializerMethodField('get_doctors_details')
 
@@ -80,10 +139,15 @@ class DepartmentDoctorsSerializer(serializers.ModelSerializer):
 
 
 class QuestionSerializer(serializers.ModelSerializer):
-    files = serializers.ListField(child=serializers.FileField(), required=False)
-    patient_details = serializers.SerializerMethodField('get_patient_details')
-    to_doctor_details = serializers.SerializerMethodField('get_to_doctor_details')
-    department_details = serializers.SerializerMethodField('get_department_details')
+    files = serializers.ListField(child=serializers.FileField(), required=False, write_only=True)
+    files_details = serializers.SerializerMethodField('get_files_details', read_only=True)
+    patient_details = serializers.SerializerMethodField('get_patient_details', read_only=True)
+    to_doctor_details = serializers.SerializerMethodField('get_to_doctor_details', read_only=True)
+    department_details = serializers.SerializerMethodField('get_department_details', read_only=True)
+
+    def get_files_details(self, obj):
+        a = File.objects.filter(id__in=list(obj.questionfile_set.values_list('file_id', flat=True)))
+        return FileSerializer(a, many=True, context=self.context).data
 
     def get_to_doctor_details(self, obj):
         return DoctorBasicDetailsSerializer(obj.to_doctor, context=self.context).data
@@ -94,11 +158,6 @@ class QuestionSerializer(serializers.ModelSerializer):
     def get_department_details(self, obj):
         return DepartmentSerializer(obj.department, context=self.context).data
 
-    def get_patient_image_full_url(self, obj):
-        patient_image = obj.patient_image()
-        request = self.context.get('request')
-        return request.build_absolute_uri(patient_image)
-
     class Meta:
         model = Question
         fields = [
@@ -106,25 +165,24 @@ class QuestionSerializer(serializers.ModelSerializer):
             'patient_details',
             'title',
             'body',
+            'to_doctor',
             'to_doctor_details',
+            'department',
             'department_details',
             'files',
+            'files_details',
             'discussions_count',
             'created_at',
         ]
         extra_kwargs = {
             'title': {'required': True},
             'body': {'required': True},
-            'to_doctor': {'required': False},
-            'department': {'required': False},
-            'files': {'required': False},
+            'to_doctor': {'required': False, 'write_only': True},
+            'department': {'required': False, 'write_only': True},
         }
         read_only_fields = [
             'id',
             'created_at',
-            'patient',
-            'patient_image',
-            'patient_full_name',
             'discussions_count',
         ]
 
@@ -265,9 +323,7 @@ class BlogSerializer(serializers.ModelSerializer):
         read_only_fields = [
             'id',
             'created_at',
-            'doctor',
-            'doctor_image',
-            'doctor_full_name',
+            'doctor_details',
             'likes_count',
             'comments_count',
         ]
@@ -435,39 +491,3 @@ class BlogLikeSerializer(serializers.ModelSerializer):
                 )
         else:
             raise serializers.ValidationError("ERROR", code='authorization')
-
-
-class PatientBasicDetailsSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField('get_patient_image_full_url')
-
-    def get_patient_image_full_url(self, obj):
-        patient_image = obj.user.image.url
-        request = self.context.get('request')
-        return request.build_absolute_uri(patient_image)
-
-    class Meta:
-        model = Patient
-        fields = [
-            'id',
-            'full_name',
-            'image',
-        ]
-        read_only_fields = ['id']
-
-
-class DoctorBasicDetailsSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField('get_doctor_image_full_url')
-
-    def get_doctor_image_full_url(self, obj):
-        doctor_image = obj.user.image.url
-        request = self.context.get('request')
-        return request.build_absolute_uri(doctor_image)
-
-    class Meta:
-        model = Doctor
-        fields = [
-            'id',
-            'full_name',
-            'image',
-        ]
-        read_only_fields = ['id']

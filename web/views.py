@@ -269,7 +269,7 @@ class QuestionDiscussions(generics.ListAPIView):
         except:
             return 0
         try:
-            question_discussions = Question.objects.get(id=question_id).discussion_set.all()
+            question_discussions = Question.objects.get(id=question_id).discussion_set.all().order_by('-created_at')
         except:
             return 1
         return question_discussions
@@ -544,7 +544,7 @@ class BlogComments(generics.ListAPIView):
         except:
             return 0
         try:
-            blog_comments = Blog.objects.get(id=blog_id).comment_set.all()
+            blog_comments = Blog.objects.get(id=blog_id).comment_set.all().order_by('-created_at')
         except:
             return 1
         return blog_comments
@@ -735,6 +735,7 @@ class DepartmentsDoctors(generics.ListAPIView):
     from .serializers import DepartmentDoctorsSerializer
     serializer_class = DepartmentDoctorsSerializer
     permission_classes = [IsAuthenticated, IsDoctor | IsPatient]
+    pagination_class = None
 
     def get_queryset(self):
         return Department.objects.all()

@@ -138,13 +138,14 @@ class File(models.Model):
         Image = "image", "Image"
         Video = "video", "Video"
         Voice = "audio", "Audio"
+        Application = "application", "Application"
 
     path = models.FileField(
         upload_to=upload_file,
         default='/default_images/default_image_for_all_models.jpeg'
     )
     type = models.CharField(
-        max_length=5,
+        max_length=12,
         choices=Type.choices,
         default=Type.Image,
     )
