@@ -1,9 +1,10 @@
 from rest_framework import serializers
 from ..models import (
-User,
-Patient,
-MedicalHistory,
+    User,
+    Patient,
+    MedicalHistory,
 )
+
 
 class PatientGeneralInfoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,6 +32,7 @@ class PatientGeneralInfoSerializer(serializers.ModelSerializer):
             'personal_phone_number': {'required': False},
         }
 
+
 class PatientMedicalHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = MedicalHistory
@@ -41,7 +43,7 @@ class PatientMedicalHistorySerializer(serializers.ModelSerializer):
             'body',
             'created_at',
         ]
-        read_only_fields = ['id','created_at']
+        read_only_fields = ['id', 'created_at']
 
     def create(self, validated_data):
         patient = self.context['request'].user.patient
@@ -61,6 +63,7 @@ class PatientMedicalHistorySerializer(serializers.ModelSerializer):
             msg = 'لم يتم الإنشاء.'
             raise serializers.ValidationError(msg, code='authorization')
 
+
 class PatientProfileInfoSerializer(serializers.ModelSerializer):
     general = serializers.SerializerMethodField('get_general')
     medical_histories = serializers.SerializerMethodField('get_medical_histories')
@@ -70,7 +73,7 @@ class PatientProfileInfoSerializer(serializers.ModelSerializer):
 
     def get_medical_histories(self, obj):
         medical_histories = obj.patient.medicalhistory_set.all()
-        return PatientMedicalHistorySerializer(medical_histories,many=True, context=self.context).data
+        return PatientMedicalHistorySerializer(medical_histories, many=True, context=self.context).data
 
     class Meta:
         model = User
@@ -78,3 +81,25 @@ class PatientProfileInfoSerializer(serializers.ModelSerializer):
             'general',
             'medical_histories',
         ]
+
+
+class PatientBasicDetailsSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField('get_user_id', read_only=True)
+    image = serializers.SerializerMethodField('get_patient_image_full_url', read_only=True)
+
+    def get_patient_image_full_url(self, obj):
+        patient_image = obj.user.image.url
+        request = self.context.get('request')
+        return request.build_absolute_uri(patient_image)
+
+    def get_user_id(self, obj):
+        return obj.user.id
+
+    class Meta:
+        model = Patient
+        fields = [
+            'id',
+            'full_name',
+            'image',
+        ]
+        read_only_fields = ['id']

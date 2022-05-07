@@ -14,7 +14,7 @@ from .models import (
     Comment,
     BlogLike,
 )
-from user_auth.models import Doctor, Patient
+from user_auth.models import User, Doctor, Patient
 
 
 def get_upload_file_path(type, filename):
@@ -66,6 +66,9 @@ def upload_files(files, model_name, model_object):
                     blog=model_object,
                     file=file_object,
                 )
+            elif model_name == 'Discussion':
+                model_object.file = file_object
+                model_object.save()
         else:
             print(f"ERROR - > File did not uploaded sucessfuly :{file.name}")
 
@@ -90,47 +93,12 @@ class FileSerializer(serializers.ModelSerializer):
         fields = ['type', 'path']
 
 
-class PatientBasicDetailsSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField('get_patient_image_full_url')
-
-    def get_patient_image_full_url(self, obj):
-        patient_image = obj.user.image.url
-        request = self.context.get('request')
-        return request.build_absolute_uri(patient_image)
-
-    class Meta:
-        model = Patient
-        fields = [
-            'id',
-            'full_name',
-            'image',
-        ]
-        read_only_fields = ['id']
-
-
-class DoctorBasicDetailsSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField('get_doctor_image_full_url')
-
-    def get_doctor_image_full_url(self, obj):
-        doctor_image = obj.user.image.url
-        request = self.context.get('request')
-        return request.build_absolute_uri(doctor_image)
-
-    class Meta:
-        model = Doctor
-        fields = [
-            'id',
-            'full_name',
-            'image',
-        ]
-        read_only_fields = ['id']
-
-
 class DepartmentDoctorsSerializer(serializers.ModelSerializer):
-    doctors = serializers.SerializerMethodField('get_doctors_details')
+    doctors = serializers.SerializerMethodField('get_doctors_details', read_only=True)
 
     def get_doctors_details(self, obj):
         department_doctors = obj.doctor_set.all()
+        from user_auth.serializers import DoctorBasicDetailsSerializer
         return DoctorBasicDetailsSerializer(department_doctors, many=True, context=self.context).data
 
     class Meta:
@@ -142,6 +110,16 @@ class QuestionSerializer(serializers.ModelSerializer):
     files = serializers.ListField(child=serializers.FileField(), required=False, write_only=True)
     files_details = serializers.SerializerMethodField('get_files_details', read_only=True)
     patient_details = serializers.SerializerMethodField('get_patient_details', read_only=True)
+    # to_doctor = serializers.ChoiceField(
+    #     choices=list(Doctor.objects.all().values_list('user_id', flat=True)),
+    #     required=False,
+    #     write_only=True
+    # )
+    to_doctor = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.filter(id__in=list(Doctor.objects.all().values_list('user_id', flat=True))),
+        required=False,
+        write_only=True
+    )
     to_doctor_details = serializers.SerializerMethodField('get_to_doctor_details', read_only=True)
     department_details = serializers.SerializerMethodField('get_department_details', read_only=True)
 
@@ -150,9 +128,11 @@ class QuestionSerializer(serializers.ModelSerializer):
         return FileSerializer(a, many=True, context=self.context).data
 
     def get_to_doctor_details(self, obj):
+        from user_auth.serializers import DoctorBasicDetailsSerializer
         return DoctorBasicDetailsSerializer(obj.to_doctor, context=self.context).data
 
     def get_patient_details(self, obj):
+        from user_auth.serializers import PatientBasicDetailsSerializer
         return PatientBasicDetailsSerializer(obj.patient, context=self.context).data
 
     def get_department_details(self, obj):
@@ -177,7 +157,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'title': {'required': True},
             'body': {'required': True},
-            'to_doctor': {'required': False, 'write_only': True},
             'department': {'required': False, 'write_only': True},
         }
         read_only_fields = [
@@ -187,7 +166,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         ]
 
     def get_fields(self, *args, **kwargs):
-        # fields = super(QuestionSerializer, self).get_fields(*args, **kwargs)
         fields = super(QuestionSerializer, self).get_fields(*args, **kwargs)
         request = self.context.get('request', None)
         if request and getattr(request, 'method', None) == "PUT":
@@ -209,18 +187,18 @@ class QuestionSerializer(serializers.ModelSerializer):
         return instance
 
     def create(self, validated_data):
-
         patient = self.context['request'].user.patient
         title = validated_data['title']
         body = validated_data['body']
         to_doctor = validated_data['to_doctor'] if 'to_doctor' in validated_data else None
         department = validated_data['department'] if 'department' in validated_data else None
-
+        print(to_doctor.account_type())
         question = Question.objects.create(
             patient=patient,
             title=title,
             body=body,
-            to_doctor=to_doctor,
+            # to_doctor=User.objects.get(id=int(to_doctor)).doctor if to_doctor else None,
+            to_doctor=to_doctor.doctor,
             department=department,
         )
         if question:
@@ -233,30 +211,36 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class DiscussionSerializer(serializers.ModelSerializer):
-    user_image = serializers.SerializerMethodField('get_user_image_full_url')
+    file = serializers.FileField(required=False, write_only=True)
+    file_details = serializers.SerializerMethodField('get_file_details', read_only=True)
+    user_details = serializers.SerializerMethodField('get_user_details', read_only=True)
 
-    def get_user_image_full_url(self, obj):
-        user_image = obj.user_image()
-        request = self.context.get('request')
-        return request.build_absolute_uri(user_image)
+    def get_file_details(self, obj):
+        if obj.file:
+            a = File.objects.get(id=obj.file.id)
+            return FileSerializer(a, context=self.context).data
+        else:
+            return None
+
+    def get_user_details(self, obj):
+        from user_auth.serializers import UserBasicDetailsSerializer
+        return UserBasicDetailsSerializer(obj.user, context=self.context).data
 
     class Meta:
         model = Discussion
         fields = [
             'id',
-            'user',
-            'user_image',
-            'user_full_name',
+            'user_details',
             'question',
             'body',
             'file',
+            'file_details',
             'created_at',
         ]
         read_only_fields = ['id', 'created_at', 'user', 'user_image', 'user_full_name']
         extra_kwargs = {
             'question': {'required': True},
             'body': {'required': True},
-            'file': {'required': False},
         }
 
     def get_fields(self, *args, **kwargs):
@@ -284,12 +268,7 @@ class DiscussionSerializer(serializers.ModelSerializer):
         )
         if discussion:
             if file:
-                fs = FileSystemStorage()
-                filename = fs.save(get_upload_discussion_file_path(user, file.name), file)
-                uploaded_file_url = fs.url(filename)
-                file_url = str(uploaded_file_url)[7:]
-                discussion.file = file_url
-                discussion.save()
+                upload_files(files=[file, ], model_name='Discussion', model_object=discussion)
             return discussion
         else:
             msg = 'لم يتم الإنشاء.'
@@ -297,10 +276,16 @@ class DiscussionSerializer(serializers.ModelSerializer):
 
 
 class BlogSerializer(serializers.ModelSerializer):
-    files = serializers.ListField(child=serializers.FileField(), required=False)
-    doctor_details = serializers.SerializerMethodField('get_doctor_details')
+    files = serializers.ListField(child=serializers.FileField(), required=False, write_only=True)
+    files_details = serializers.SerializerMethodField('get_files_details', read_only=True)
+    doctor_details = serializers.SerializerMethodField('get_doctor_details', read_only=True)
+
+    def get_files_details(self, obj):
+        a = File.objects.filter(id__in=list(obj.blogfile_set.values_list('file_id', flat=True)))
+        return FileSerializer(a, many=True, context=self.context).data
 
     def get_doctor_details(self, obj):
+        from user_auth.serializers import DoctorBasicDetailsSerializer
         return DoctorBasicDetailsSerializer(obj.doctor, context=self.context).data
 
     class Meta:
@@ -311,6 +296,7 @@ class BlogSerializer(serializers.ModelSerializer):
             'title',
             'body',
             'files',
+            'files_details',
             'likes_count',
             'comments_count',
             'created_at',
@@ -318,12 +304,10 @@ class BlogSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'title': {'required': True},
             'body': {'required': True},
-            'files': {'required': False},
         }
         read_only_fields = [
             'id',
             'created_at',
-            'doctor_details',
             'likes_count',
             'comments_count',
         ]
@@ -370,25 +354,22 @@ class BlogSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user_image = serializers.SerializerMethodField('get_user_image_full_url')
+    user_details = serializers.SerializerMethodField('get_user_details', read_only=True)
 
-    def get_user_image_full_url(self, obj):
-        user_image = obj.user_image()
-        request = self.context.get('request')
-        return request.build_absolute_uri(user_image)
+    def get_user_details(self, obj):
+        from user_auth.serializers import UserBasicDetailsSerializer
+        return UserBasicDetailsSerializer(obj.user, context=self.context).data
 
     class Meta:
         model = Comment
         fields = [
             'id',
-            'user',
-            'user_image',
-            'user_full_name',
+            'user_details',
             'blog',
             'body',
             'created_at',
         ]
-        read_only_fields = ['id', 'created_at', 'user', 'user_image', 'user_full_name']
+        read_only_fields = ['id', 'created_at']
         extra_kwargs = {
             'blog': {'required': True},
             'body': {'required': True},

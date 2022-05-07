@@ -694,14 +694,14 @@ class DepartmentQuestions(generics.ListAPIView):
         except:
             return 0
         if department_id == 'all':
-            department_questions = Question.objects.all()
+            department_questions = Question.objects.all().order_by('-created_at')
         elif not (department_id > 0):
             return 1
         else:
             if not Department.objects.filter(id=department_id).exists():
                 return 1
             else:
-                department_questions = Question.objects.filter(department_id=department_id)
+                department_questions = Question.objects.filter(department_id=department_id).order_by('-created_at')
         return department_questions
 
     def list(self, request, *args, **kwargs):

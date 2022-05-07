@@ -4,7 +4,7 @@ from django.utils import timezone
 
 
 class Patient(models.Model):
-    user = models.OneToOneField('user_auth.User', on_delete=models.CASCADE, unique=True)
+    user = models.OneToOneField('user_auth.User', on_delete=models.CASCADE, unique=True, related_name='patient')
     created_at = models.DateTimeField(_('date created'), auto_now_add=True)
 
     def __str__(self):

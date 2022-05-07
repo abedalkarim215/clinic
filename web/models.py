@@ -52,9 +52,18 @@ class Discussion(models.Model):
     question = models.ForeignKey('web.Question', on_delete=models.CASCADE)
     user = models.ForeignKey('user_auth.User', on_delete=models.CASCADE)
     body = models.TextField(null=True, blank=True)
-    file = models.FileField(
-        upload_to=upload_discussion_file,
-        default='/default_images/default_image_for_all_models.jpeg'
+    # file = models.FileField(
+    #     upload_to=upload_discussion_file,
+    #     null=True,
+    #     blank=True,
+    #     default=None
+    # )
+    file = models.ForeignKey(
+        'web.File',
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.SET_NULL
     )
     created_at = models.DateTimeField(_('date created'), auto_now_add=True)
 

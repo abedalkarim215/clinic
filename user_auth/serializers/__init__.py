@@ -2,7 +2,7 @@ from .UserAuthenticationSerializers import (
     RegisterSerializer,
     UserSerializer,
     UserBasicInfoSerializer,
-
+    UserBasicDetailsSerializer,
 
 )
 from .DoctorSerializers import (
@@ -11,35 +11,39 @@ from .DoctorSerializers import (
     DoctorPersonalInfoSerializer,
     DoctorEducationInfoSerializer,
     DoctorWorkExperienceSerializer,
-
-
+    DoctorBasicDetailsSerializer,
 
 )
 
-from.PatientSerializers import (
+from .PatientSerializers import (
     PatientProfileInfoSerializer,
     PatientGeneralInfoSerializer,
     PatientMedicalHistorySerializer,
+    PatientBasicDetailsSerializer,
 )
+
 __all__ = [
-    #User Authentication Serializers
+    # User Authentication Serializers
     RegisterSerializer,
     UserSerializer,
 
-    #User Serializers
+    # User Serializers
     UserBasicInfoSerializer,
+    UserBasicDetailsSerializer,
 
-    #Doctor Serializers
+    # Doctor Serializers
     DoctorProfileInfoSerializer,
     DoctorGeneralInfoSerializer,
     DoctorPersonalInfoSerializer,
     DoctorEducationInfoSerializer,
     DoctorWorkExperienceSerializer,
+    DoctorBasicDetailsSerializer,
 
-    #DoctorEditGeneralInfoSerializer,
+    # DoctorEditGeneralInfoSerializer,
 
     # Patient Serializers
     PatientProfileInfoSerializer,
     PatientGeneralInfoSerializer,
     PatientMedicalHistorySerializer,
+    PatientBasicDetailsSerializer,
 ]

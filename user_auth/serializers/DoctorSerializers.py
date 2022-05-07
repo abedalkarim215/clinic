@@ -14,12 +14,11 @@ def upload_user_image(email_as_string, filename):
     return 'users/{}/personal_images/{}'.format(email_as_string, filename)
 
 
-
-
 class DoctorGeneralInfoSerializer(serializers.ModelSerializer):
     work_phone_number = serializers.CharField(required=False)
     specialization = serializers.CharField(required=False)
-    years_of_experience = serializers.IntegerField(min_value=0,required=False)
+    years_of_experience = serializers.IntegerField(min_value=0, required=False)
+
     class Meta:
         model = User
         fields = [
@@ -60,8 +59,10 @@ class DoctorGeneralInfoSerializer(serializers.ModelSerializer):
 
 
 class DoctorPersonalInfoSerializer(serializers.ModelSerializer):
-    personal_phone_number = serializers.CharField(validators=[UniqueValidator(queryset=User.objects.all())],required=False)
+    personal_phone_number = serializers.CharField(validators=[UniqueValidator(queryset=User.objects.all())],
+                                                  required=False)
     location = serializers.CharField(required=False)
+
     class Meta:
         model = Doctor
         fields = [
@@ -92,6 +93,7 @@ class DoctorPersonalInfoSerializer(serializers.ModelSerializer):
 
 class DoctorEducationInfoSerializer(serializers.ModelSerializer):
     medical_licence = serializers.FileField(required=False)
+
     class Meta:
         model = Education
         fields = [
@@ -131,7 +133,7 @@ class DoctorWorkExperienceSerializer(serializers.ModelSerializer):
             'certificate',
             'created_at',
         ]
-        read_only_fields = ['id','created_at']
+        read_only_fields = ['id', 'created_at']
 
     def create(self, validated_data):
         def upload_doctor_work_experience_certificate(doctor, filename):
@@ -139,6 +141,7 @@ class DoctorWorkExperienceSerializer(serializers.ModelSerializer):
                 doctor.user.email_as_string(),
                 filename
             )
+
         doctor = self.context['request'].user.doctor
         title = validated_data['title']
         time_period = validated_data['time_period']
@@ -164,6 +167,7 @@ class DoctorWorkExperienceSerializer(serializers.ModelSerializer):
             msg = 'لم يتم الإنشاء.'
             raise serializers.ValidationError(msg, code='authorization')
 
+
 class DoctorProfileInfoSerializer(serializers.ModelSerializer):
     general = serializers.SerializerMethodField('get_general')
     personal_info = serializers.SerializerMethodField('get_personal_info')
@@ -177,7 +181,7 @@ class DoctorProfileInfoSerializer(serializers.ModelSerializer):
         return DoctorPersonalInfoSerializer(obj.doctor, context={'request': self.context.get('request')}).data
 
     def get_education(self, obj):
-        def get_medical_licence_full_url(self,obj):
+        def get_medical_licence_full_url(self, obj):
             image_url = obj.doctor.medical_licence.url
             request = self.context.get('request')
             return request.build_absolute_uri(image_url)
@@ -191,12 +195,13 @@ class DoctorProfileInfoSerializer(serializers.ModelSerializer):
                 'degree': None,
                 'time_period': None,
                 'certificate': None,
-                'medical_licence': get_medical_licence_full_url(self,obj),
+                'medical_licence': get_medical_licence_full_url(self, obj),
             }
 
     def get_work_experiences(self, obj):
         work_experiences = obj.doctor.workexperience_set.all()
-        return DoctorWorkExperienceSerializer(work_experiences,many=True, context={'request': self.context.get('request')}).data
+        return DoctorWorkExperienceSerializer(work_experiences, many=True,
+                                              context={'request': self.context.get('request')}).data
 
     class Meta:
         model = User
@@ -206,3 +211,25 @@ class DoctorProfileInfoSerializer(serializers.ModelSerializer):
             'education',
             'work_experiences',
         ]
+
+
+class DoctorBasicDetailsSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField('get_user_id', read_only=True)
+    image = serializers.SerializerMethodField('get_doctor_image_full_url', read_only=True)
+
+    def get_doctor_image_full_url(self, obj):
+        doctor_image = obj.user.image.url
+        request = self.context.get('request')
+        return request.build_absolute_uri(doctor_image)
+
+    def get_user_id(self, obj):
+        return obj.user.id
+
+    class Meta:
+        model = Doctor
+        fields = [
+            'id',
+            'full_name',
+            'image',
+        ]
+        read_only_fields = ['id']

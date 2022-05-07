@@ -22,7 +22,7 @@ class Doctor(models.Model):
         Accepted = 1, "Accepted"
         Rejected = 0, "Rejected"
 
-    user = models.OneToOneField('user_auth.User', on_delete=models.CASCADE, unique=True)
+    user = models.OneToOneField('user_auth.User', on_delete=models.CASCADE, unique=True, related_name='doctor')
     specialization = models.CharField(max_length=255, default='not specified')
     work_phone_number = models.CharField(
         max_length=255,

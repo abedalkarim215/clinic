@@ -1,15 +1,17 @@
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from ..models import (
-User,
-Doctor,
-Patient,
+    User,
+    Doctor,
+    Patient,
 )
 
+
 class RegisterSerializer(serializers.ModelSerializer):
-    type = serializers.ChoiceField(['Doctor','Patient'])
+    type = serializers.ChoiceField(['Doctor', 'Patient'])
     password = serializers.CharField(min_length=8)
     confirm_password = serializers.CharField(min_length=8)
+
     class Meta:
         model = User
         fields = [
@@ -41,18 +43,17 @@ class RegisterSerializer(serializers.ModelSerializer):
             msg = _('يرجى إدخال كلمة المرور')
             raise serializers.ValidationError(msg, code='authorization')
 
-        if password != confirm_password :
+        if password != confirm_password:
             msg = _('كلمات المرور المدخلة غير متطابقة.')
             raise serializers.ValidationError(msg, code='authorization')
 
-
-        if len(password) < 8 :
+        if len(password) < 8:
             msg = _('كلمة المرور قصيرة جدا ، يجب أن لا تقل كلمة المرور عن 8 حروف أو أرقام.')
             raise serializers.ValidationError(msg, code='authorization')
 
         user = User.objects.create_user(
-                                        email=email,
-                                        password=password,
+            email=email,
+            password=password,
         )
 
         if user:
@@ -73,6 +74,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             msg = _('لم يتم التسجيل.')
             raise serializers.ValidationError(msg, code='authorization')
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -81,10 +83,12 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
         ]
 
+
 class UserBasicInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            'id',
             'account_type',
             'email',
             'first_name',
@@ -94,3 +98,22 @@ class UserBasicInfoSerializer(serializers.ModelSerializer):
             'gender',
             'birthday',
         ]
+
+
+class UserBasicDetailsSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField('get_user_image_full_url', read_only=True)
+
+    def get_user_image_full_url(self, obj):
+        user_image = obj.image.url
+        request = self.context.get('request')
+        return request.build_absolute_uri(user_image)
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'full_name',
+            'image',
+            'account_type',
+        ]
+        read_only_fields = ['id']
