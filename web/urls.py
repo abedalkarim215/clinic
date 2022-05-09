@@ -25,7 +25,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path('media/files/<path:file>', dummy_secure_media_directory),
+    # path('media/files/<path:file>', dummy_secure_media_directory),
 
     path('get/departments/', Departments.as_view()),
     path('get/departments/doctors/', DepartmentsDoctors.as_view()),

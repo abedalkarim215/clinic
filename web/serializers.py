@@ -34,6 +34,7 @@ en_ch = list(string.ascii_lowercase)
 
 
 def remove_non_ascii(s):
+    s = str(s).replace(' ', '_').lower()
     a = ''
     for i in s:
         if i in ascii:
@@ -47,7 +48,7 @@ def upload_files(files, model_name, model_object):
     for file in files:
         file_type = file.content_type.split('/')[0]
         fs = FileSystemStorage()
-        file_name_after_mod = remove_non_ascii(str(file.name).replace(' ', '_').lower())
+        file_name_after_mod = remove_non_ascii(file.name)
         filename = fs.save(get_upload_file_path(file_type, file_name_after_mod), file)
         uploaded_file_url = fs.url(filename)
         file_url = str(uploaded_file_url)[7:]
