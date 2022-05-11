@@ -91,7 +91,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
-        fields = ['type', 'path']
+        fields = ['id', 'type', 'path']
 
 
 class DepartmentDoctorsSerializer(serializers.ModelSerializer):
@@ -182,6 +182,8 @@ class QuestionSerializer(serializers.ModelSerializer):
 
                 # upload new question files
                 upload_files(files=value, model_name='Question', model_object=instance)
+            if attr == 'to_doctor':
+                setattr(instance, attr, value.doctor)
             else:
                 setattr(instance, attr, value)
         instance.save()

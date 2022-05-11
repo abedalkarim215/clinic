@@ -748,3 +748,44 @@ class PersonalQuestions(generics.ListAPIView):
 
     def get_queryset(self):
         return Question.objects.filter(patient=self.request.user.patient)
+
+
+class DeleteQuestionFiles(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated, IsPatient]
+    lookup_field = 'files'
+
+    def get_object(self):
+        try:
+            print("*" * 100)
+            print(self.request.POST[self.lookup_field])
+            print(list(self.request.POST[self.lookup_field]))
+            op = self.request.POST[self.lookup_field].strip('][').split(',')
+            print(op)
+            print("9" * 100)
+            files_ids = list([int(x) for x in op])
+            print(files_ids)
+        except:
+            return 0
+        files = File.objects.filter(id__in=files_ids)
+        return files
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance == 0:
+            return Response({
+                'status': False,
+                'msg': "يرجى إرسال المعرف (id) الخاص بالعناصر المراد حذفها",
+            },
+                status=400
+            )
+        else:
+            for file in instance:
+                # self.check_object_permissions(self.request, instance)
+                self.perform_destroy(file)
+            return Response({
+                'status': True,
+                'msg': "تم حذف العناصر بنجاح",
+                # 'files': str(list(instance)),
+            },
+                status=201
+            )

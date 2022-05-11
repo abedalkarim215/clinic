@@ -18,7 +18,7 @@
 							"formdata": [
 								{
 									"key": "email",
-									"value": "Doctor@doctor.com",
+									"value": "Patient@patient.com",
 									"description": "Patient@patient.com",
 									"type": "text"
 								},
@@ -846,7 +846,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Token a91277c3a6fb273c7fe10da24771e2dce756ab683cc4aecdb4a91f849c490e98",
+								"value": "Token 810a3176da0955898400b7dfc2905a287bac273458e32a67381646b7e323a378",
 								"type": "text"
 							}
 						],
@@ -878,7 +878,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Token a91277c3a6fb273c7fe10da24771e2dce756ab683cc4aecdb4a91f849c490e98",
+								"value": "Token 810a3176da0955898400b7dfc2905a287bac273458e32a67381646b7e323a378",
 								"type": "text"
 							}
 						],
@@ -987,7 +987,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token b9a10829715d6e1089d31e29628e21d801acc0d38fc0c064b27d1e60c9a22f12",
+										"value": "Token a7d6a11410f2b90cf6d2fab22fe9e27d45e57d2b99719872b73488db829312ab",
 										"type": "text"
 									}
 								],
@@ -1006,36 +1006,18 @@
 										},
 										{
 											"key": "to_doctor",
-											"value": "1",
+											"value": "6",
 											"type": "text"
 										},
 										{
 											"key": "department",
-											"value": "1",
+											"value": "16",
 											"type": "text"
 										},
 										{
 											"key": "files",
 											"type": "file",
-											"src": [
-												"/home/karim/Downloads/images/011.mp3",
-												"/home/karim/Downloads/images/default_image_for_all_models.jpeg",
-												"/home/karim/Downloads/images/default_image_for_dealer_and_customer_models.png",
-												"/home/karim/Downloads/images/img_masthead.gif",
-												"/home/karim/Downloads/images/Nature Beautiful short video 720p HD.mp4",
-												"/home/karim/Downloads/images/Problem Set 01.pdf",
-												"/home/karim/Downloads/images/test0.jpeg",
-												"/home/karim/Downloads/images/test3.jpg",
-												"/home/karim/Downloads/images/test4.jpg",
-												"/home/karim/Downloads/images/test5.jpg",
-												"/home/karim/Downloads/images/test6.jpeg",
-												"/home/karim/Downloads/images/test7.jpeg",
-												"/home/karim/Downloads/images/test8.jpeg",
-												"/home/karim/Downloads/images/test9.png",
-												"/home/karim/Downloads/images/test10.jpg",
-												"/home/karim/Downloads/images/عبد الكريم معين  df  سي 458.jpg",
-												"/home/karim/Downloads/images/عيد.jpg"
-											]
+											"src": "/home/karim/Downloads/images/عبد الكريم معين  df  سي 458.jpg"
 										}
 									]
 								},
@@ -1099,13 +1081,54 @@
 							"response": []
 						},
 						{
+							"name": "Delete Question Files",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token a7d6a11410f2b90cf6d2fab22fe9e27d45e57d2b99719872b73488db829312ab",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "files",
+											"value": "[327,326]",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/delete/question/files/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"delete",
+										"question",
+										"files",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Edit Question",
 							"request": {
 								"method": "PUT",
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token 3203f275e5c8931a7507e4bb682a87edfade3374bf3ec0c8055a59f20df69e1e",
+										"value": "Token a7d6a11410f2b90cf6d2fab22fe9e27d45e57d2b99719872b73488db829312ab",
 										"type": "text"
 									}
 								],
@@ -1114,7 +1137,7 @@
 									"formdata": [
 										{
 											"key": "id",
-											"value": "8",
+											"value": "129",
 											"type": "text"
 										},
 										{
@@ -1129,7 +1152,7 @@
 										},
 										{
 											"key": "to_doctor",
-											"value": "4",
+											"value": "5",
 											"description": "IMG Must be a file",
 											"type": "text"
 										},
@@ -1141,10 +1164,8 @@
 										{
 											"key": "files",
 											"type": "file",
-											"src": [
-												"/home/karim/Downloads/images/test4.jpg",
-												"/home/karim/Downloads/images/test8.jpeg"
-											]
+											"src": [],
+											"disabled": true
 										}
 									]
 								},
@@ -1174,7 +1195,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token b9a10829715d6e1089d31e29628e21d801acc0d38fc0c064b27d1e60c9a22f12",
+										"value": "Token 810a3176da0955898400b7dfc2905a287bac273458e32a67381646b7e323a378",
 										"type": "text"
 									}
 								],
@@ -1211,7 +1232,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token b9a10829715d6e1089d31e29628e21d801acc0d38fc0c064b27d1e60c9a22f12",
+										"value": "Token 810a3176da0955898400b7dfc2905a287bac273458e32a67381646b7e323a378",
 										"type": "text"
 									}
 								],
@@ -1248,7 +1269,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token 1267a2683d5023bde5a3d6c6029722438bc8576dcae90d36ec5053fe078ba9c5",
+										"value": "Token 810a3176da0955898400b7dfc2905a287bac273458e32a67381646b7e323a378",
 										"type": "text"
 									}
 								],
@@ -1286,7 +1307,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token 586ad74c9617ddc11b7f31464749baa942b31625221d4b2d2d010c72c958fcba",
+										"value": "Token 810a3176da0955898400b7dfc2905a287bac273458e32a67381646b7e323a378",
 										"type": "text"
 									}
 								],
@@ -1322,7 +1343,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token b8c28a0dccc35996110207fb3b841901275ed9b618efe6638eb07f530aa94ba9",
+										"value": "Token 0787e599991ff22b0d85e15fcfdc717d6be44ae4c28fd80e978ae70ad8028ac8",
 										"type": "text"
 									}
 								],
@@ -1343,9 +1364,9 @@
 											"key": "files",
 											"type": "file",
 											"src": [
-												"/home/karim/Downloads/images/test4.jpg",
+												"/home/karim/Downloads/images/test3.jpg",
 												"/home/karim/Downloads/images/test5.jpg",
-												"/home/karim/Downloads/images/test8.jpeg"
+												"/home/karim/Downloads/images/test7.jpeg"
 											]
 										}
 									]
@@ -1600,7 +1621,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"value": "Token 810a3176da0955898400b7dfc2905a287bac273458e32a67381646b7e323a378",
 										"type": "text"
 									}
 								],
@@ -1620,7 +1641,7 @@
 										{
 											"key": "file",
 											"type": "file",
-											"src": "/home/karim/Downloads/images/test9.png"
+											"src": "/home/karim/Downloads/images/test6.jpeg"
 										}
 									]
 								},
@@ -1745,7 +1766,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token c915c88a75c80c947e21e415fd1b8bc226bf2aab52efa4298c688b36b74c7e82",
+										"value": "Token 0787e599991ff22b0d85e15fcfdc717d6be44ae4c28fd80e978ae70ad8028ac8",
 										"type": "text"
 									}
 								],
@@ -1935,6 +1956,10 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "New Folder",
+					"item": []
 				}
 			]
 		}

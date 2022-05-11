@@ -22,6 +22,7 @@ from .views import (
     DepartmentQuestions,
     DepartmentsDoctors,
     PersonalQuestions,
+    DeleteQuestionFiles,
 )
 
 urlpatterns = [
@@ -54,5 +55,7 @@ urlpatterns = [
     path('delete/comment/', DeleteComment.as_view()),
 
     path('blog/like/', BlogLike.as_view()),
+
+    path('delete/question/files/', DeleteQuestionFiles.as_view()),
 
 ]
