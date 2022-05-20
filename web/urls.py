@@ -22,7 +22,9 @@ from .views import (
     DepartmentQuestions,
     DepartmentsDoctors,
     PersonalQuestions,
-    DeleteQuestionFiles,
+    AllBlogs,
+    PersonalBlogs,
+    BlogFilter,
 )
 
 urlpatterns = [
@@ -43,6 +45,9 @@ urlpatterns = [
     path('create/discussion/', CreateDiscussion.as_view()),
     path('edit/discussion/', EditDiscussion.as_view()),
     path('delete/discussion/', DeleteDiscussion.as_view()),
+    path('get/all/blogs/', AllBlogs.as_view()),
+    path('get/personal/blogs/', PersonalBlogs.as_view()),
+    path('filter/all/blogs/', BlogFilter.as_view()),
 
     path('get/blog/details/', BlogDetails.as_view()),
     path('get/blog/comments/', BlogComments.as_view()),
@@ -55,7 +60,5 @@ urlpatterns = [
     path('delete/comment/', DeleteComment.as_view()),
 
     path('blog/like/', BlogLike.as_view()),
-
-    path('delete/question/files/', DeleteQuestionFiles.as_view()),
 
 ]

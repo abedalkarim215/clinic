@@ -18,7 +18,7 @@
 							"formdata": [
 								{
 									"key": "email",
-									"value": "Patient@patient.com",
+									"value": "Doctor@doctor.com",
 									"description": "Patient@patient.com",
 									"type": "text"
 								},
@@ -1337,13 +1337,112 @@
 					"name": "Blog API's",
 					"item": [
 						{
+							"name": "Get All Blogs",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token 90467d739d3a2f55309185ae14d4ec8b758662ead89f1ecd951ef48c4e606b84",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/get/all/blogs/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"get",
+										"all",
+										"blogs",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get My Perosnal Blogs",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token 90467d739d3a2f55309185ae14d4ec8b758662ead89f1ecd951ef48c4e606b84",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/get/all/blogs/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"get",
+										"all",
+										"blogs",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Filter All Blogs",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Token 90467d739d3a2f55309185ae14d4ec8b758662ead89f1ecd951ef48c4e606b84",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/filter/all/blogs/?search=abedalkarim",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"filter",
+										"all",
+										"blogs",
+										""
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "abedalkarim"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Create Blog",
 							"request": {
 								"method": "POST",
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token 0787e599991ff22b0d85e15fcfdc717d6be44ae4c28fd80e978ae70ad8028ac8",
+										"value": "Token 3474a348f33d8c671e117ed946e831d965aedb2cc4c5d5dd85e0a35a76a50c65",
 										"type": "text"
 									}
 								],
@@ -1364,7 +1463,8 @@
 											"key": "files",
 											"type": "file",
 											"src": [
-												"/home/karim/Downloads/images/test3.jpg",
+												"/home/karim/Downloads/images/011.mp3",
+												"/home/karim/Downloads/images/test0.jpeg",
 												"/home/karim/Downloads/images/test5.jpg",
 												"/home/karim/Downloads/images/test7.jpeg"
 											]
@@ -1571,7 +1671,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token 7f16b901aa280a94cc72834492243d70978948b29342f6d9b1c23c4d32641813",
+										"value": "Token 90467d739d3a2f55309185ae14d4ec8b758662ead89f1ecd951ef48c4e606b84",
 										"type": "text"
 									}
 								],
@@ -1580,12 +1680,13 @@
 									"formdata": [
 										{
 											"key": "blog",
-											"value": "5",
+											"value": "11",
 											"type": "text"
 										},
 										{
 											"key": "like",
-											"value": "1",
+											"value": "0",
+											"description": "0 for dislike , 1 for like",
 											"type": "text"
 										}
 									]

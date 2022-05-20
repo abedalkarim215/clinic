@@ -5,6 +5,7 @@ from user_auth.permissions import IsDoctor, IsPatient
 from rest_framework.response import Response
 import os
 from django.http import FileResponse, HttpResponse
+from rest_framework import status
 
 from .models import (
     Department,
@@ -676,6 +677,50 @@ class BlogLike(generics.CreateAPIView):
     serializer_class = BlogLikeSerializer
     permission_classes = [IsAuthenticated, IsDoctor | IsPatient]
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        status, done, msg = self.perform_create(serializer)
+        if status == 0 and done:
+            return Response(
+                {
+                    'status': True,
+                    'action': 'dislike',
+                    'msg': msg,
+                },
+                status=201
+            )
+        elif status == 0 and not done:
+            return Response(
+                {
+                    'status': False,
+                    'action': 'dislike',
+                    'msg': msg,
+                },
+                status=400
+            )
+        elif status == 1 and done:
+            return Response(
+                {
+                    'status': True,
+                    'action': 'like',
+                    'msg': msg,
+                },
+                status=201
+            )
+        elif status == 1 and not done:
+            return Response(
+                {
+                    'status': False,
+                    'action': 'like',
+                    'msg': msg,
+                },
+                status=400
+            )
+
+    def perform_create(self, serializer):
+        return serializer.save()
+
 
 class DepartmentQuestions(generics.ListAPIView):
     from .serializers import QuestionSerializer
@@ -750,42 +795,32 @@ class PersonalQuestions(generics.ListAPIView):
         return Question.objects.filter(patient=self.request.user.patient)
 
 
-class DeleteQuestionFiles(generics.DestroyAPIView):
-    permission_classes = [IsAuthenticated, IsPatient]
-    lookup_field = 'files'
+class AllBlogs(generics.ListAPIView):
+    from .serializers import BlogSerializer
+    serializer_class = BlogSerializer
+    permission_classes = [IsAuthenticated, IsDoctor | IsPatient]
 
-    def get_object(self):
-        try:
-            print("*" * 100)
-            print(self.request.POST[self.lookup_field])
-            print(list(self.request.POST[self.lookup_field]))
-            op = self.request.POST[self.lookup_field].strip('][').split(',')
-            print(op)
-            print("9" * 100)
-            files_ids = list([int(x) for x in op])
-            print(files_ids)
-        except:
-            return 0
-        files = File.objects.filter(id__in=files_ids)
-        return files
+    def get_queryset(self):
+        return Blog.objects.all().order_by('-created_at')
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if instance == 0:
-            return Response({
-                'status': False,
-                'msg': "يرجى إرسال المعرف (id) الخاص بالعناصر المراد حذفها",
-            },
-                status=400
-            )
-        else:
-            for file in instance:
-                # self.check_object_permissions(self.request, instance)
-                self.perform_destroy(file)
-            return Response({
-                'status': True,
-                'msg': "تم حذف العناصر بنجاح",
-                # 'files': str(list(instance)),
-            },
-                status=201
-            )
+
+class PersonalBlogs(generics.ListAPIView):
+    from .serializers import BlogSerializer
+    serializer_class = BlogSerializer
+    permission_classes = [IsAuthenticated, IsDoctor]
+
+    def get_queryset(self):
+        return Blog.objects.filter(doctor=self.request.user.doctor).order_by('-created_at')
+
+
+from django_filters.rest_framework import DjangoFilterBackend
+
+from rest_framework import filters
+
+
+class BlogFilter(generics.ListAPIView):
+    from .serializers import BlogSerializer
+    serializer_class = BlogSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'doctor__user__first_name', 'doctor__user__last_name', 'body']
+    queryset = Blog.objects.all()

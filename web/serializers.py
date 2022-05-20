@@ -282,6 +282,7 @@ class BlogSerializer(serializers.ModelSerializer):
     files = serializers.ListField(child=serializers.FileField(), required=False, write_only=True)
     files_details = serializers.SerializerMethodField('get_files_details', read_only=True)
     doctor_details = serializers.SerializerMethodField('get_doctor_details', read_only=True)
+    like_it = serializers.SerializerMethodField('did_i_like_it', read_only=True)
 
     def get_files_details(self, obj):
         a = File.objects.filter(id__in=list(obj.blogfile_set.values_list('file_id', flat=True)))
@@ -290,6 +291,9 @@ class BlogSerializer(serializers.ModelSerializer):
     def get_doctor_details(self, obj):
         from user_auth.serializers import DoctorBasicDetailsSerializer
         return DoctorBasicDetailsSerializer(obj.doctor, context=self.context).data
+
+    def did_i_like_it(self, obj):
+        return obj.bloglike_set.filter(user=self.context.get('request').user).exists()
 
     class Meta:
         model = Blog
@@ -302,6 +306,7 @@ class BlogSerializer(serializers.ModelSerializer):
             'files_details',
             'likes_count',
             'comments_count',
+            'like_it',
             'created_at',
         ]
         extra_kwargs = {
@@ -434,44 +439,22 @@ class BlogLikeSerializer(serializers.ModelSerializer):
         if like_status == 0:
             try:
                 blog_like = BlogLike.objects.get(blog=blog, user=user).delete()
+                done = True
+                return 0, done, 'تم إزالة الإعجاب بنجاح'
             except:
-                msg = 'لا يوجد إعجاب لهذا المنشور لإزالته'
-                return Response(
-                    {
-                        'status': False,
-                        'msg': msg,
-                    },
-                    status=400
-                )
+                done = False
+                return 0, done, 'لا يوجد إعجاب لهذا المنشور لإزالته'
         elif like_status == 1:
             blog_like, created = BlogLike.objects.get_or_create(blog=blog, user=user)
-            print(blog_like)
-            print(created)
             if blog_like and created:
-                return Response(
-                    {
-                        'status': True,
-                        'msg': 'تم إنشاء الإعجاب بنجاح',
-                    },
-                    status=201
-                )
+                done = True
+                return 1, done, 'تم إنشاء الإعجاب بنجاح'
             elif blog_like and not created:
                 msg = 'لقد تم الإعجاب بهذا المنشور مسبقا ، لا يمكن الإعجاب مرة أخرى'
-                return Response(
-                    {
-                        'status': False,
-                        'msg': msg,
-                    },
-                    status=400
-                )
+                done = False
+                return 1, done, msg
             else:
-                msg = 'لم يتم إنشاء الإعجاب.'
-                return Response(
-                    {
-                        'status': False,
-                        'msg': msg,
-                    },
-                    status=500
-                )
+                done = False
+                return 1, done, "ERROR OCC"
         else:
             raise serializers.ValidationError("ERROR", code='authorization')
