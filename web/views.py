@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from user_auth.permissions import IsDoctor, IsPatient
+from user_auth.permissions import IsDoctor, IsPatient, IsAdmin
 from rest_framework.response import Response
 import os
 from django.http import FileResponse, HttpResponse
@@ -16,7 +16,7 @@ from .models import (
     Blog,
     Comment,
 )
-from user_auth.models import Doctor
+from user_auth.models import Doctor, User
 
 
 # def MissParameters():
@@ -818,9 +818,226 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
 
+class QuestionFilter(generics.ListAPIView):
+    from .serializers import QuestionSerializer
+    serializer_class = QuestionSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'title',
+        'body',
+        'patient__user__first_name',
+        'patient__user__last_name',
+        'to_doctor__user__first_name',
+        'to_doctor__user__last_name',
+        'to_doctor__department__name',
+        'department__name'
+    ]
+    queryset = Question.objects.all()
+
+
 class BlogFilter(generics.ListAPIView):
     from .serializers import BlogSerializer
     serializer_class = BlogSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['title', 'doctor__user__first_name', 'doctor__user__last_name', 'body']
+    search_fields = [
+        'title',
+        'doctor__user__first_name',
+        'doctor__user__last_name',
+        'body',
+        'doctor__department__name'
+    ]
     queryset = Blog.objects.all()
+
+
+class PendingDoctors(generics.ListAPIView):
+    from user_auth.serializers import DoctorBasicDetailsSerializer
+    serializer_class = DoctorBasicDetailsSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get_queryset(self):
+        return Doctor.objects.filter(status=2)
+
+
+class UpdateDoctorStatus(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get_object(self):
+        try:
+            doctor_user_id = int(self.request.POST["id"])
+            status = int(self.request.POST["status"])
+        except:
+            return 0, -1
+        try:
+            doctor = User.objects.get(id=doctor_user_id).doctor
+        except:
+            return 1, 0
+        return doctor, status
+
+    def update(self, request, *args, **kwargs):
+        instance, status = self.get_object()
+        if instance == 0 or status not in [0, 1]:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "يرجى التأكد من إرسال البيانات المطلوبة",
+                },
+                status=400
+            )
+        elif instance == 1:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "الدكتور الذي تحاول التعديل عليه غير موجود",
+                },
+                status=404
+            )
+        else:
+            if status == 0:
+                if instance.status == 0:
+                    return Response(
+                        {
+                            'status': False,
+                            'msg': "الدكتور الذي تحاول رفضه ،  مرفوض من قبل",
+                        },
+                        status=400
+                    )
+                else:
+                    instance.status = 0
+                    instance.save()
+                    return Response(
+                        {
+                            'status': True,
+                            'msg': "تم رفض الدكتور بنجاح",
+                            'doctor_id': int(instance.id),
+                        },
+                        status=201
+                    )
+            elif status == 1:
+                if instance.status == 1:
+                    return Response(
+                        {
+                            'status': False,
+                            'msg': "الدكتور الذي تحاول قبوله ،  مقبول من قبل",
+                        },
+                        status=400
+                    )
+                else:
+                    instance.status = 1
+                    instance.save()
+                    return Response(
+                        {
+                            'status': True,
+                            'msg': "تم قبول الدكتور بنجاح",
+                            'doctor_id': int(instance.id),
+                        },
+                        status=201
+                    )
+
+
+class CreateDepartment(generics.CreateAPIView):
+    from .serializers import DepartmentSerializer
+    serializer_class = DepartmentSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+
+class EditDepartment(generics.UpdateAPIView):
+    from .serializers import DepartmentSerializer
+    serializer_class = DepartmentSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
+    lookup_field = 'id'
+
+    def get_object(self):
+        try:
+            department_id = self.request.POST[self.lookup_field]
+        except:
+            return 0
+        try:
+            department = Department.objects.get(id=department_id)
+        except:
+            return 1
+        return department
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        if instance == 0:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "يرجى إرسال المعرف (id) الخاص بالعنصر",
+                },
+                status=400
+            )
+        if instance == 1:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "العنصر الذي تحاول التعديل عليه غير موجود",
+                },
+                status=404
+            )
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+        return Response(serializer.data)
+
+
+class UpdateDoctorDepartment(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get_object(self):
+        try:
+            doctor_user_id = int(self.request.POST["doctor"])
+            new_department_id = int(self.request.POST["department"])
+        except:
+            return 0, 0
+        try:
+            doctor = User.objects.get(id=doctor_user_id).doctor
+        except:
+            return 1, 1
+        try:
+            department = Department.objects.get(id=new_department_id)
+        except:
+            return 2, 2
+        return doctor, department
+
+    def update(self, request, *args, **kwargs):
+        instance, new_department = self.get_object()
+        if instance == 0:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "يرجى التأكد من إرسال البيانات المطلوبة",
+                },
+                status=400
+            )
+        elif instance == 1:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "الدكتور الذي تحاول التعديل عليه غير موجود",
+                },
+                status=404
+            )
+        elif instance == 2:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "القسم الذي تحاول إضافته للدكتور غير موجود",
+                },
+                status=404
+            )
+        else:
+            instance.department = new_department
+            instance.save()
+            return Response(
+                {
+                    'status': True,
+                    'msg': "تم إضافة القسم إلى الدكتور بنجاح",
+                    'doctor_id': int(instance.id),
+                    'department_id': int(instance.department.id),
+                },
+                status=201
+            )

@@ -1,28 +1,30 @@
 from django.urls import path
 from knox import views as knox_views
 from .views import (
-                    RegisterAPI,
-                    LoginAPI,
-                    change_password,
+    RegisterAPI,
+    LoginAPI,
+    change_password,
 
-                    #User Views
-                    UserBasicInfo,
-                    UserProfileInfo,
+    # User Views
+    UserBasicInfo,
+    # UserBasicDetails,
+    UserProfileInfo,
+    UserProfileDetails,
 
-                    #Doctor Views
-                    DoctorEditGeneralInfo,
-                    DoctorEditPersonalInfo,
-                    DoctorEditEducationInfo,
-                    DoctorEditWorkExperience,
-                    DoctorCreateWorkExperience,
-                    DoctorDeleteWorkExperience,
+    # Doctor Views
+    DoctorEditGeneralInfo,
+    DoctorEditPersonalInfo,
+    DoctorEditEducationInfo,
+    DoctorEditWorkExperience,
+    DoctorCreateWorkExperience,
+    DoctorDeleteWorkExperience,
 
-                    #Patient Views
-                    PatientEditGeneralInfo,
-                    PatientEditMedicalHistory,
-                    PatientCreateMedicalHistory,
-                    PatientDeleteMedicalHistory,
-                    )
+    # Patient Views
+    PatientEditGeneralInfo,
+    PatientEditMedicalHistory,
+    PatientCreateMedicalHistory,
+    PatientDeleteMedicalHistory,
+)
 
 urlpatterns = [
     path('register/', RegisterAPI.as_view()),
@@ -31,12 +33,13 @@ urlpatterns = [
     path('logoutall/', knox_views.LogoutAllView.as_view()),
     path('change/password/', change_password),
 
-    #User API's
+    # User API's
     path('user/get/basic/info/', UserBasicInfo.as_view()),
+    # path('user/get/basic/details/', UserBasicDetails.as_view()),
     path('user/get/profile/info/', UserProfileInfo.as_view()),
+    path('user/get/profile/details/', UserProfileDetails.as_view()),
 
-
-    #Doctor API's
+    # Doctor API's
     path('doctor/edit/general/info/', DoctorEditGeneralInfo.as_view()),
     path('doctor/edit/personal/info/', DoctorEditPersonalInfo.as_view()),
     path('doctor/edit/education/info/', DoctorEditEducationInfo.as_view()),

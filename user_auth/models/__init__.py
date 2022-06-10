@@ -7,17 +7,18 @@ from .DoctorModels import (
 from .PatientModels import (
     Patient,
     MedicalHistory,
-
 )
+from .AdminModels import Admin
+
 __all__ = [
-    #User Models
+    # User Models
     User,
 
-    #Patient Models
+    # Patient Models
     Patient,
     MedicalHistory,
 
-    #Doctor Models
+    # Doctor Models
     Doctor,
     Education,
     WorkExperience,

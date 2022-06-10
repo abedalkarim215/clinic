@@ -86,6 +86,27 @@ class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
         fields = ['id', 'name']
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'name': {'required': True},
+        }
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+
+    def create(self, validated_data):
+        name = validated_data['name']
+        department = Department.objects.create(
+            name=name,
+        )
+        if department:
+            return department
+        else:
+            msg = 'لم يتم الإنشاء.'
+            raise serializers.ValidationError(msg, code='authorization')
 
 
 class FileSerializer(serializers.ModelSerializer):

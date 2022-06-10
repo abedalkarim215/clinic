@@ -10,6 +10,7 @@ class PatientGeneralInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            'account_type',
             'email',
             'first_name',
             'last_name',

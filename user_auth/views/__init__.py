@@ -3,8 +3,8 @@ from .UserAuthenticationViews import (
     LoginAPI,
     change_password,
     UserBasicInfo,
-    UserProfileInfo
-
+    UserProfileInfo,
+    UserProfileDetails,
 
 )
 from .DoctorViews import (
@@ -23,17 +23,19 @@ from .PatientViews import (
     PatientDeleteMedicalHistory,
 
 )
+
 __all__ = [
-    #User Authentication Views
+    # User Authentication Views
     RegisterAPI,
     LoginAPI,
     change_password,
 
-    #User Views
+    # User Views
     UserBasicInfo,
     UserProfileInfo,
+    UserProfileDetails,
 
-    #Doctor Views
+    # Doctor Views
     DoctorEditGeneralInfo,
     DoctorEditPersonalInfo,
     DoctorEditEducationInfo,
@@ -41,7 +43,7 @@ __all__ = [
     DoctorCreateWorkExperience,
     DoctorDeleteWorkExperience,
 
-    #Patient Views
+    # Patient Views
     PatientEditGeneralInfo,
     PatientEditMedicalHistory,
     PatientCreateMedicalHistory,

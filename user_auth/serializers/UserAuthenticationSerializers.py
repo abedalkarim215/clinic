@@ -90,6 +90,7 @@ class UserBasicInfoSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'account_type',
+            'status',
             'email',
             'first_name',
             'last_name',

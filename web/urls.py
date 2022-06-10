@@ -25,6 +25,11 @@ from .views import (
     AllBlogs,
     PersonalBlogs,
     BlogFilter,
+    PendingDoctors,
+    UpdateDoctorStatus,
+    CreateDepartment,
+    EditDepartment,
+    UpdateDoctorDepartment,
 )
 
 urlpatterns = [
@@ -60,5 +65,12 @@ urlpatterns = [
     path('delete/comment/', DeleteComment.as_view()),
 
     path('blog/like/', BlogLike.as_view()),
+
+    # admin API's
+    path('get/pending/doctors/', PendingDoctors.as_view()),
+    path('update/doctor/status/', UpdateDoctorStatus.as_view()),
+    path('create/department/', CreateDepartment.as_view()),
+    path('edit/department/', EditDepartment.as_view()),
+    path('update/doctor/department/', UpdateDoctorDepartment.as_view()),
 
 ]

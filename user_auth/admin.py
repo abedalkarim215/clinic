@@ -5,7 +5,8 @@ from .models import (
     Patient,
     MedicalHistory,
     Education,
-    WorkExperience
+    WorkExperience,
+    Admin,
 )
 
 
@@ -35,3 +36,4 @@ admin.site.register(Patient, PatientAdmin)
 admin.site.register(MedicalHistory, MedicalHistoryAdmin)
 admin.site.register(Education)
 admin.site.register(WorkExperience, WorkExperienceAdmin)
+admin.site.register(Admin)
