@@ -7,7 +7,6 @@ from .views import (
 
     # User Views
     UserBasicInfo,
-    UserBasicDetails,
     UserProfileInfo,
     UserProfileDetails,
 
@@ -35,7 +34,6 @@ urlpatterns = [
 
     # User API's
     path('user/get/basic/info/', UserBasicInfo.as_view()),
-    # path('user/get/basic/details/', UserBasicDetails.as_view()),
     path('user/get/profile/info/', UserProfileInfo.as_view()),
     path('user/get/profile/details/', UserProfileDetails.as_view()),
 
