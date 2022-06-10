@@ -119,7 +119,7 @@ class DepartmentDoctorsSerializer(serializers.ModelSerializer):
     doctors = serializers.SerializerMethodField('get_doctors_details', read_only=True)
 
     def get_doctors_details(self, obj):
-        department_doctors = obj.doctor_set.all()
+        department_doctors = obj.doctor_set.filter(status=1)
         from user_auth.serializers import DoctorBasicDetailsSerializer
         return DoctorBasicDetailsSerializer(department_doctors, many=True, context=self.context).data
 
@@ -204,6 +204,8 @@ class QuestionSerializer(serializers.ModelSerializer):
                 # upload new question files
                 upload_files(files=value, model_name='Question', model_object=instance)
             if attr == 'to_doctor':
+                if value.doctor.status != 1:
+                    continue
                 setattr(instance, attr, value.doctor)
             else:
                 setattr(instance, attr, value)
@@ -222,7 +224,7 @@ class QuestionSerializer(serializers.ModelSerializer):
             title=title,
             body=body,
             # to_doctor=User.objects.get(id=int(to_doctor)).doctor if to_doctor else None,
-            to_doctor=to_doctor.doctor,
+            to_doctor=to_doctor.doctor if to_doctor.doctor.status == 1 else None,
             department=department,
         )
         if question:

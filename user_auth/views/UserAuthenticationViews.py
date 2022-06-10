@@ -1,3 +1,5 @@
+import datetime
+import pytz
 from rest_framework import generics
 from rest_framework.response import Response
 from knox.models import AuthToken
@@ -10,10 +12,11 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.decorators import api_view, permission_classes
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
-from ..permissions import IsDoctor, IsPatient, IsAdmin
+from ..permissions import IsDoctor, IsPatient, IsAdmin, IsDoctorRegardlessStatus
 from ..models import (
     User,
 )
+from knox.models import AuthToken
 
 
 class RegisterAPI(generics.GenericAPIView):
@@ -124,14 +127,14 @@ def change_password(request):
 class UserBasicInfo(generics.RetrieveAPIView):
     from ..serializers import UserBasicInfoSerializer
     serializer_class = UserBasicInfoSerializer
-    permission_classes = [IsAuthenticated, IsDoctor | IsPatient | IsAdmin]
+    permission_classes = [IsAuthenticated, IsDoctorRegardlessStatus | IsPatient | IsAdmin]
 
     def get_object(self):
         return self.request.user
 
 
 class UserProfileInfo(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, IsDoctor | IsPatient]
+    permission_classes = [IsAuthenticated, IsDoctorRegardlessStatus | IsPatient]
 
     def get_object(self):
         return self.request.user
@@ -152,7 +155,7 @@ class UserProfileInfo(generics.RetrieveAPIView):
 
 
 class UserProfileDetails(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, IsDoctor | IsPatient | IsAdmin]
+    permission_classes = [IsAuthenticated, IsDoctorRegardlessStatus | IsPatient | IsAdmin]
 
     def get_object(self):
         try:
@@ -200,3 +203,37 @@ class UserProfileDetails(generics.RetrieveAPIView):
                     },
                     status=404
                 )
+
+
+class CheckLogin(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get_object(self):
+        try:
+            user_id = int(self.request.GET["user_id"])
+        except:
+            return -1, -1
+
+        return AuthToken.objects.filter(
+            user__id=user_id,
+            expiry__gt=datetime.datetime.now().replace(tzinfo=pytz.UTC)
+        ).exists(), user_id
+
+    def retrieve(self, request, *args, **kwargs):
+        instance, user_id = self.get_object()
+        if instance == -1:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "يرجى إرسال المعرف (id) الخاص بالمستخدم",
+                },
+                status=400
+            )
+        else:
+            return Response(
+                {
+                    'is_login': instance,
+                    'user_id': user_id,
+                },
+                status=201
+            )

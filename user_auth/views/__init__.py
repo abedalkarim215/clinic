@@ -1,6 +1,7 @@
 from .UserAuthenticationViews import (
     RegisterAPI,
     LoginAPI,
+    CheckLogin,
     change_password,
     UserBasicInfo,
     UserProfileInfo,
@@ -28,6 +29,7 @@ __all__ = [
     # User Authentication Views
     RegisterAPI,
     LoginAPI,
+    CheckLogin,
     change_password,
 
     # User Views

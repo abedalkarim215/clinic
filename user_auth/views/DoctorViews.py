@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from ..permissions import IsDoctor
+from ..permissions import IsDoctor, IsDoctorRegardlessStatus
 from rest_framework.response import Response
 from ..models import (
     User,
@@ -13,7 +13,7 @@ from ..models import (
 class DoctorEditGeneralInfo(generics.UpdateAPIView):
     from ..serializers import DoctorGeneralInfoSerializer
     serializer_class = DoctorGeneralInfoSerializer
-    permission_classes = [IsAuthenticated, IsDoctor]
+    permission_classes = [IsAuthenticated, IsDoctorRegardlessStatus]
     queryset = User.objects.all()
 
     def get_object(self):
@@ -26,7 +26,7 @@ class DoctorEditGeneralInfo(generics.UpdateAPIView):
 class DoctorEditPersonalInfo(generics.UpdateAPIView):
     from ..serializers import DoctorPersonalInfoSerializer
     serializer_class = DoctorPersonalInfoSerializer
-    permission_classes = [IsAuthenticated, IsDoctor]
+    permission_classes = [IsAuthenticated, IsDoctorRegardlessStatus]
     queryset = Doctor.objects.all()
 
     def get_object(self):
@@ -39,7 +39,7 @@ class DoctorEditPersonalInfo(generics.UpdateAPIView):
 class DoctorEditEducationInfo(generics.UpdateAPIView):
     from ..serializers import DoctorEducationInfoSerializer
     serializer_class = DoctorEducationInfoSerializer
-    permission_classes = [IsAuthenticated, IsDoctor]
+    permission_classes = [IsAuthenticated, IsDoctorRegardlessStatus]
     queryset = Education.objects.all()
 
     def get_object(self):
@@ -58,7 +58,7 @@ class DoctorEditEducationInfo(generics.UpdateAPIView):
 class DoctorEditWorkExperience(generics.UpdateAPIView):
     from ..serializers import DoctorWorkExperienceSerializer
     serializer_class = DoctorWorkExperienceSerializer
-    permission_classes = [IsAuthenticated, IsDoctor]
+    permission_classes = [IsAuthenticated, IsDoctorRegardlessStatus]
     lookup_field = 'id'
 
     def get_object(self):
@@ -103,11 +103,11 @@ class DoctorEditWorkExperience(generics.UpdateAPIView):
 class DoctorCreateWorkExperience(generics.CreateAPIView):
     from ..serializers import DoctorWorkExperienceSerializer
     serializer_class = DoctorWorkExperienceSerializer
-    permission_classes = [IsAuthenticated, IsDoctor]
+    permission_classes = [IsAuthenticated, IsDoctorRegardlessStatus]
 
 
 class DoctorDeleteWorkExperience(generics.DestroyAPIView):
-    permission_classes = [IsAuthenticated, IsDoctor]
+    permission_classes = [IsAuthenticated, IsDoctorRegardlessStatus]
     lookup_field = 'id'
 
     def get_object(self):

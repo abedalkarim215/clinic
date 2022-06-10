@@ -52,7 +52,7 @@ def dummy_secure_media_directory(request, file):
             users_access.append(question.to_doctor.user)
         else:
             if question.department:
-                department_doctors = Doctor.objects.filter(department_id=question.department.id)
+                department_doctors = Doctor.objects.filter(department_id=question.department.id, status=1)
                 for doctor in department_doctors:
                     users_access.append(doctor.user)
             else:

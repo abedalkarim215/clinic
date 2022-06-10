@@ -10,9 +10,12 @@ class IsDoctor(BasePermission):
     def has_permission(self, request, view):
         try:
             user = request.user.doctor
+            if user.status != 1:
+                return False
+            else:
+                return True
         except:
             return False
-        return True
 
     def has_object_permission(self, request, view, obj):
         try:
@@ -21,6 +24,20 @@ class IsDoctor(BasePermission):
                 return True
             else:
                 return False
+        except:
+            return False
+
+
+class IsDoctorRegardlessStatus(BasePermission):
+    message = '''You do not have permission to perform this action, for one of the reasons :
+    1-User type Must Be Doctor
+    2-User Must Have Permission To Edit This Object
+    '''
+
+    def has_permission(self, request, view):
+        try:
+            user = request.user.doctor
+            return True
         except:
             return False
 

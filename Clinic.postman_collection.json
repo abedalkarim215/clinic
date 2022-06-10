@@ -2145,6 +2145,42 @@
 					"response": []
 				},
 				{
+					"name": "Check Login",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 5f3a306833ba3692f245139d1bfe7c5c2c3f8aa3ed3039e9d748307fb2fe5986",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/check/login/?user_id=2",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"check",
+								"login",
+								""
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Update Doctor Status",
 					"request": {
 						"method": "PUT",

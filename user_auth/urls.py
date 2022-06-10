@@ -3,6 +3,7 @@ from knox import views as knox_views
 from .views import (
     RegisterAPI,
     LoginAPI,
+    CheckLogin,
     change_password,
 
     # User Views
@@ -31,6 +32,7 @@ urlpatterns = [
     path('logout/', knox_views.LogoutView.as_view()),
     path('logoutall/', knox_views.LogoutAllView.as_view()),
     path('change/password/', change_password),
+    path('check/login/', CheckLogin.as_view()),
 
     # User API's
     path('user/get/basic/info/', UserBasicInfo.as_view()),
