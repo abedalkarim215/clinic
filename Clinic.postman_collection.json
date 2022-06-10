@@ -18,7 +18,7 @@
 							"formdata": [
 								{
 									"key": "email",
-									"value": "Doctor@doctor.com",
+									"value": "karim@karim.com",
 									"description": "Patient@patient.com",
 									"type": "text"
 								},
@@ -26,6 +26,18 @@
 									"key": "password",
 									"value": "12345678",
 									"description": "Doctor@doctor.com",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"description": "admin : karim@karim.com",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"description": "password : karim",
 									"type": "text"
 								}
 							]
@@ -139,7 +151,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Token bbf6cb8826f9415efc8602c8ebc28742f0194828bb7b26db552b0f4e7f8dbe32",
+								"value": "Token a5dc5eb3ee81f450252ded6b03d074acd7db372614b8bb00390dcb1063ae2aa2",
 								"type": "text"
 							}
 						],
@@ -148,17 +160,17 @@
 							"formdata": [
 								{
 									"key": "old_password",
-									"value": "karimkarim",
+									"value": "karim",
 									"type": "text"
 								},
 								{
 									"key": "new_password",
-									"value": "karim",
+									"value": "12345678",
 									"type": "text"
 								},
 								{
 									"key": "confirm_new_password",
-									"value": "karim",
+									"value": "12345678",
 									"type": "text"
 								}
 							]
@@ -846,7 +858,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Token 810a3176da0955898400b7dfc2905a287bac273458e32a67381646b7e323a378",
+								"value": "Token 41e0dbbe50b67252fc89d81303d66ef226622f88ae7702fd9d76184c3c6e39ac",
 								"type": "text"
 							}
 						],
@@ -898,6 +910,44 @@
 								"profile",
 								"info",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile Details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 41e0dbbe50b67252fc89d81303d66ef226622f88ae7702fd9d76184c3c6e39ac",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/user/get/profile/details/?user_id=1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"get",
+								"profile",
+								"details",
+								""
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -2057,10 +2107,220 @@
 							"response": []
 						}
 					]
+				}
+			]
+		},
+		{
+			"name": "Admin API's",
+			"item": [
+				{
+					"name": "Get Pending Doctors",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 5f3a306833ba3692f245139d1bfe7c5c2c3f8aa3ed3039e9d748307fb2fe5986",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/get/pending/doctors/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"get",
+								"pending",
+								"doctors",
+								""
+							]
+						}
+					},
+					"response": []
 				},
 				{
-					"name": "New Folder",
-					"item": []
+					"name": "Update Doctor Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 5f3a306833ba3692f245139d1bfe7c5c2c3f8aa3ed3039e9d748307fb2fe5986",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "1",
+									"description": "0 for reject - 1 for accept",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/update/doctor/status/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"update",
+								"doctor",
+								"status",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Doctor Department",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 5f3a306833ba3692f245139d1bfe7c5c2c3f8aa3ed3039e9d748307fb2fe5986",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "doctor",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "department",
+									"value": "5",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/update/doctor/department/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"update",
+								"doctor",
+								"department",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Department",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 5f3a306833ba3692f245139d1bfe7c5c2c3f8aa3ed3039e9d748307fb2fe5986",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "new dep",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/create/department/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"create",
+								"department",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Department",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 5f3a306833ba3692f245139d1bfe7c5c2c3f8aa3ed3039e9d748307fb2fe5986",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "50",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "new",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/edit/department/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"edit",
+								"department",
+								""
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

@@ -7,7 +7,7 @@ from .views import (
 
     # User Views
     UserBasicInfo,
-    # UserBasicDetails,
+    UserBasicDetails,
     UserProfileInfo,
     UserProfileDetails,
 
