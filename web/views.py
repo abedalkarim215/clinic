@@ -850,8 +850,8 @@ class BlogFilter(generics.ListAPIView):
 
 
 class PendingDoctors(generics.ListAPIView):
-    from user_auth.serializers import DoctorBasicDetailsSerializer
-    serializer_class = DoctorBasicDetailsSerializer
+    from user_auth.serializers import DoctorBasicAndEducationDetailsSerializer
+    serializer_class = DoctorBasicAndEducationDetailsSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
 
     def get_queryset(self):

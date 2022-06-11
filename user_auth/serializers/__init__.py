@@ -12,6 +12,7 @@ from .DoctorSerializers import (
     DoctorEducationInfoSerializer,
     DoctorWorkExperienceSerializer,
     DoctorBasicDetailsSerializer,
+    DoctorBasicAndEducationDetailsSerializer,
 
 )
 
@@ -38,6 +39,7 @@ __all__ = [
     DoctorEducationInfoSerializer,
     DoctorWorkExperienceSerializer,
     DoctorBasicDetailsSerializer,
+    DoctorBasicAndEducationDetailsSerializer,
 
     # DoctorEditGeneralInfoSerializer,
 

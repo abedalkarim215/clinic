@@ -106,7 +106,7 @@ class Education(models.Model):
             filename
         )
 
-    doctor = models.OneToOneField('user_auth.Doctor', on_delete=models.CASCADE)
+    doctor = models.OneToOneField('user_auth.Doctor', on_delete=models.CASCADE, related_name='education')
     university = models.CharField(max_length=255, null=True, blank=True)
     degree = models.CharField(max_length=255, null=True, blank=True)
     time_period = models.CharField(max_length=255, null=True, blank=True)
