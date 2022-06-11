@@ -77,7 +77,7 @@ def dummy_secure_media_directory(request, file):
 class Departments(generics.ListAPIView):
     from .serializers import DepartmentSerializer
     serializer_class = DepartmentSerializer
-    permission_classes = [IsAuthenticated, IsDoctor | IsPatient]
+    permission_classes = [IsAuthenticated, IsDoctor | IsPatient | IsAdmin]
     pagination_class = None
 
     def get_queryset(self):
