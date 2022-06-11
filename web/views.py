@@ -1041,3 +1041,12 @@ class UpdateDoctorDepartment(generics.UpdateAPIView):
                 },
                 status=201
             )
+
+
+class DoctorDirectedQuestions(generics.ListAPIView):
+    from .serializers import QuestionSerializer
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticated, IsDoctor]
+
+    def get_queryset(self):
+        return Question.objects.filter(to_doctor=self.request.user.doctor)

@@ -30,6 +30,7 @@ from .views import (
     CreateDepartment,
     EditDepartment,
     UpdateDoctorDepartment,
+    DoctorDirectedQuestions,
 )
 
 urlpatterns = [
@@ -42,6 +43,7 @@ urlpatterns = [
     path('get/question/discussions/', QuestionDiscussions.as_view()),
     path('get/department/questions/', DepartmentQuestions.as_view()),
     path('get/personal/questions/', PersonalQuestions.as_view()),
+    path('get/doctor/directed/questions/', DoctorDirectedQuestions.as_view()),
 
     path('create/question/', CreateQuestion.as_view()),
     path('edit/question/', EditQuestion.as_view()),
@@ -59,12 +61,11 @@ urlpatterns = [
     path('create/blog/', CreateBlog.as_view()),
     path('edit/blog/', EditBlog.as_view()),
     path('delete/blog/', DeleteBlog.as_view()),
+    path('blog/like/', BlogLike.as_view()),
 
     path('create/comment/', CreateComment.as_view()),
     path('edit/comment/', EditComment.as_view()),
     path('delete/comment/', DeleteComment.as_view()),
-
-    path('blog/like/', BlogLike.as_view()),
 
     # admin API's
     path('get/pending/doctors/', PendingDoctors.as_view()),
