@@ -5,6 +5,8 @@ from user_auth.permissions import IsDoctor, IsPatient, IsAdmin
 from rest_framework.response import Response
 import os
 from django.http import FileResponse, HttpResponse
+from rest_framework import filters
+
 from rest_framework import status
 
 from .models import (
@@ -726,6 +728,17 @@ class DepartmentQuestions(generics.ListAPIView):
     from .serializers import QuestionSerializer
     serializer_class = QuestionSerializer
     permission_classes = [IsAuthenticated, IsDoctor | IsPatient]
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'title',
+        'body',
+        'patient__user__first_name',
+        'patient__user__last_name',
+        'to_doctor__user__first_name',
+        'to_doctor__user__last_name',
+        'to_doctor__department__name',
+        'department__name'
+    ]
 
     def get_queryset(self):
         try:
@@ -799,9 +812,71 @@ class AllBlogs(generics.ListAPIView):
     from .serializers import BlogSerializer
     serializer_class = BlogSerializer
     permission_classes = [IsAuthenticated, IsDoctor | IsPatient]
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'title',
+        'doctor__user__first_name',
+        'doctor__user__last_name',
+        'body',
+        'doctor__department__name'
+    ]
 
     def get_queryset(self):
         return Blog.objects.all().order_by('-created_at')
+
+
+class Doctors(generics.ListAPIView):
+    from user_auth.serializers import DoctorPersonalInfoSerializer
+    serializer_class = DoctorPersonalInfoSerializer
+    permission_classes = [IsAuthenticated, IsDoctor | IsPatient]
+
+    def get_queryset(self):
+        try:
+            department_id = self.request.GET["department_id"]
+            # dumm implementation i will change it later
+            if not department_id == 'all':
+                try:
+                    department_id = int(department_id)
+                except:
+                    return 1
+        except:
+            return 0
+        if department_id == 'all':
+            department_doctors = Doctor.objects.all()
+        elif not (department_id > 0):
+            return 1
+        else:
+            if not Department.objects.filter(id=department_id).exists():
+                return 1
+            else:
+                department_doctors = Doctor.objects.filter(department_id=department_id)
+        return department_doctors
+
+    def list(self, request, *args, **kwargs):
+        query = self.get_queryset()
+        if query == 0:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "يرجى إرسال المعرف (id) الخاص بالعنصر",
+                },
+                status=400
+            )
+        if query == 1:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "القسم الذي تحاول عرض الأسئلة الخاصة به غير موجود",
+                },
+                status=404
+            )
+        queryset = self.filter_queryset(query)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class PersonalBlogs(generics.ListAPIView):
@@ -814,8 +889,6 @@ class PersonalBlogs(generics.ListAPIView):
 
 
 from django_filters.rest_framework import DjangoFilterBackend
-
-from rest_framework import filters
 
 
 class QuestionFilter(generics.ListAPIView):

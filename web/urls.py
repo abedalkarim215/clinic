@@ -31,6 +31,7 @@ from .views import (
     EditDepartment,
     UpdateDoctorDepartment,
     DoctorDirectedQuestions,
+    Doctors,
 )
 
 urlpatterns = [
@@ -38,6 +39,7 @@ urlpatterns = [
 
     path('get/departments/', Departments.as_view()),
     path('get/departments/doctors/', DepartmentsDoctors.as_view()),
+    path('get/doctors/', Doctors.as_view()),
 
     path('get/question/details/', QuestionDetails.as_view()),
     path('get/question/discussions/', QuestionDiscussions.as_view()),

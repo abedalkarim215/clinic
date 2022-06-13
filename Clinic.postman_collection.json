@@ -18,7 +18,7 @@
 							"formdata": [
 								{
 									"key": "email",
-									"value": "Doctor@doctor.com",
+									"value": "karim@karim.com",
 									"description": "Patient@patient.com",
 									"type": "text"
 								},
@@ -37,7 +37,6 @@
 								{
 									"key": "",
 									"value": "",
-									"description": "password : karim",
 									"type": "text"
 								}
 							]
@@ -591,6 +590,47 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Filter All Doctors",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token 90467d739d3a2f55309185ae14d4ec8b758662ead89f1ecd951ef48c4e606b84",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/filter/all/blogs/?search=abedalkarim&department_id=all",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"filter",
+								"all",
+								"blogs",
+								""
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "abedalkarim"
+								},
+								{
+									"key": "department_id",
+									"value": "all"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -2152,7 +2192,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Token 5f3a306833ba3692f245139d1bfe7c5c2c3f8aa3ed3039e9d748307fb2fe5986",
+								"value": "Token fb515cd996d36408fbd2d1fe79a14f8a96a64f4fb2645cc45077e42d64df6f36",
 								"type": "text"
 							}
 						],
