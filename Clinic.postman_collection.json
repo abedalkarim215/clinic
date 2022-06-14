@@ -18,7 +18,7 @@
 							"formdata": [
 								{
 									"key": "email",
-									"value": "karim@karim.com",
+									"value": "Doctor@doctor.com",
 									"description": "Patient@patient.com",
 									"type": "text"
 								},
@@ -362,7 +362,7 @@
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "Token a91277c3a6fb273c7fe10da24771e2dce756ab683cc4aecdb4a91f849c490e98",
+										"value": "Token 1dc3776a7cc2b4e1f4a7f90cb2633283f3c4c02d0fa186d260b6f938b5330d21",
 										"type": "text"
 									}
 								],
@@ -598,12 +598,12 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Token 90467d739d3a2f55309185ae14d4ec8b758662ead89f1ecd951ef48c4e606b84",
+								"value": "Token 90f7b59cfb9d182d5bcaf8e8a87da4547e28c31f59c1bce2962a7ad90fb9d98d",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:8000/filter/all/blogs/?search=abedalkarim&department_id=all",
+							"raw": "http://127.0.0.1:8000/get/doctors/?department_id=all&status=2",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -613,19 +613,18 @@
 							],
 							"port": "8000",
 							"path": [
-								"filter",
-								"all",
-								"blogs",
+								"get",
+								"doctors",
 								""
 							],
 							"query": [
 								{
-									"key": "search",
-									"value": "abedalkarim"
-								},
-								{
 									"key": "department_id",
 									"value": "all"
+								},
+								{
+									"key": "status",
+									"value": "2"
 								}
 							]
 						}
@@ -1364,7 +1363,7 @@
 									}
 								],
 								"url": {
-									"raw": "http://127.0.0.1:8000/get/department/questions/?department_id=all",
+									"raw": "http://127.0.0.1:8000/get/department/questions/?department_id=all&search=abedalkarim",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -1384,6 +1383,10 @@
 											"key": "department_id",
 											"value": "all",
 											"description": "id - all"
+										},
+										{
+											"key": "search",
+											"value": "abedalkarim"
 										}
 									]
 								}
@@ -2259,7 +2262,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Token 5f3a306833ba3692f245139d1bfe7c5c2c3f8aa3ed3039e9d748307fb2fe5986",
+								"value": "Token 90f7b59cfb9d182d5bcaf8e8a87da4547e28c31f59c1bce2962a7ad90fb9d98d",
 								"type": "text"
 							}
 						],
@@ -2273,8 +2276,13 @@
 								},
 								{
 									"key": "status",
-									"value": "1",
+									"value": "0",
 									"description": "0 for reject - 1 for accept",
+									"type": "text"
+								},
+								{
+									"key": "status_message",
+									"value": "acceptedfff",
 									"type": "text"
 								}
 							]

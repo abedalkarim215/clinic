@@ -836,31 +836,41 @@ class AllBlogs(generics.ListAPIView):
         return Blog.objects.all().order_by('-created_at')
 
 
+from django.db.models import Q
+
+
 class Doctors(generics.ListAPIView):
     from user_auth.serializers import DoctorBasicAndPersonalDetailsSerializer
     serializer_class = DoctorBasicAndPersonalDetailsSerializer
-    permission_classes = [IsAuthenticated, IsDoctor | IsPatient]
+    permission_classes = [IsAuthenticated, IsDoctor | IsPatient | IsAdmin]
 
     def get_queryset(self):
+
         try:
-            department_id = self.request.GET["department_id"]
-            # dumm implementation i will change it later
-            if not department_id == 'all':
-                try:
-                    department_id = int(department_id)
-                except:
-                    return 1
+            department_id = str(self.request.GET["department_id"])
+            if not department_id == 'all' and not department_id.isdigit():
+                return 1
         except:
-            return 0
+            department_id = 'all'
         if department_id == 'all':
-            department_doctors = Doctor.objects.filter(status=1)
-        elif not (department_id > 0):
+            status = self.request.GET.get("status")
+            if status and str(status) in ["0", "1", "2"]:
+                criterion2 = Q(status=int(status))
+            else:
+                criterion2 = Q(id__gt=0)
+            print(status)
+            department_doctors = Doctor.objects.filter(criterion2)
+        elif not (int(department_id) > 0) or not Department.objects.filter(id=int(department_id)).exists():
             return 1
         else:
-            if not Department.objects.filter(id=department_id).exists():
-                return 1
+            criterion1 = Q(department_id=int(department_id))
+            status = self.request.GET.get("status")
+            if status and str(status) in ["0", "1", "2"]:
+                criterion2 = Q(status=int(status))
             else:
-                department_doctors = Doctor.objects.filter(department_id=department_id, status=1)
+                criterion2 = Q(id__gt=0)
+            print(status)
+            department_doctors = Doctor.objects.filter(criterion1 & criterion2)
         return department_doctors
 
     def list(self, request, *args, **kwargs):
@@ -939,91 +949,6 @@ class BlogFilter(generics.ListAPIView):
         'doctor__department__name'
     ]
     queryset = Blog.objects.all()
-
-
-class PendingDoctors(generics.ListAPIView):
-    from user_auth.serializers import DoctorBasicAndEducationDetailsSerializer
-    serializer_class = DoctorBasicAndEducationDetailsSerializer
-    permission_classes = [IsAuthenticated, IsAdmin]
-
-    def get_queryset(self):
-        return Doctor.objects.filter(status=2)
-
-
-class UpdateDoctorStatus(generics.UpdateAPIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
-
-    def get_object(self):
-        try:
-            doctor_user_id = int(self.request.POST["id"])
-            status = int(self.request.POST["status"])
-        except:
-            return 0, -1
-        try:
-            doctor = User.objects.get(id=doctor_user_id).doctor
-        except:
-            return 1, 0
-        return doctor, status
-
-    def update(self, request, *args, **kwargs):
-        instance, status = self.get_object()
-        if instance == 0 or status not in [0, 1]:
-            return Response(
-                {
-                    'status': False,
-                    'msg': "يرجى التأكد من إرسال البيانات المطلوبة",
-                },
-                status=400
-            )
-        elif instance == 1:
-            return Response(
-                {
-                    'status': False,
-                    'msg': "الدكتور الذي تحاول التعديل عليه غير موجود",
-                },
-                status=404
-            )
-        else:
-            if status == 0:
-                if instance.status == 0:
-                    return Response(
-                        {
-                            'status': False,
-                            'msg': "الدكتور الذي تحاول رفضه ،  مرفوض من قبل",
-                        },
-                        status=400
-                    )
-                else:
-                    instance.status = 0
-                    instance.save()
-                    return Response(
-                        {
-                            'status': True,
-                            'msg': "تم رفض الدكتور بنجاح",
-                            'doctor_id': int(instance.id),
-                        },
-                        status=201
-                    )
-            elif status == 1:
-                if instance.status == 1:
-                    return Response(
-                        {
-                            'status': False,
-                            'msg': "الدكتور الذي تحاول قبوله ،  مقبول من قبل",
-                        },
-                        status=400
-                    )
-                else:
-                    instance.status = 1
-                    instance.save()
-                    return Response(
-                        {
-                            'status': True,
-                            'msg': "تم قبول الدكتور بنجاح",
-                            'doctor_id': int(instance.id),
-                        },
-                        status=201
-                    )
 
 
 class CreateDepartment(generics.CreateAPIView):

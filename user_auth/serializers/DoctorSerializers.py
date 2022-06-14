@@ -54,6 +54,8 @@ class DoctorGeneralInfoSerializer(serializers.ModelSerializer):
                 instance.doctor.__setattr__(attr, value)
             else:
                 setattr(instance, attr, value)
+        if instance.doctor.status == 0:
+            instance.doctor.status = 2
         instance.save()
         instance.doctor.save()
         return instance
@@ -87,6 +89,8 @@ class DoctorPersonalInfoSerializer(serializers.ModelSerializer):
                 instance.user.__setattr__(attr, value)
             else:
                 setattr(instance, attr, value)
+        if instance.status == 0:
+            instance.status = 2
         instance.user.save()
         instance.save()
         return instance
@@ -118,6 +122,8 @@ class DoctorEducationInfoSerializer(serializers.ModelSerializer):
                 setattr(instance.doctor, attr, value)
             else:
                 setattr(instance, attr, value)
+        if instance.doctor.status == 0:
+            instance.doctor.status = 2
         instance.doctor.save()
         instance.save()
         return instance
@@ -135,6 +141,15 @@ class DoctorWorkExperienceSerializer(serializers.ModelSerializer):
             'created_at',
         ]
         read_only_fields = ['id', 'created_at']
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if instance.doctor.status == 0:
+            instance.doctor.status = 2
+        instance.doctor.save()
+        instance.save()
+        return instance
 
     def create(self, validated_data):
         def upload_doctor_work_experience_certificate(doctor, filename):
@@ -163,6 +178,9 @@ class DoctorWorkExperienceSerializer(serializers.ModelSerializer):
             certificate=certificate_url,
         )
         if work_experience:
+            if work_experience.doctor.status == 0:
+                work_experience.doctor.status = 2
+            work_experience.doctor.save()
             return work_experience
         else:
             msg = 'لم يتم الإنشاء.'
@@ -211,6 +229,8 @@ class DoctorProfileInfoSerializer(serializers.ModelSerializer):
             'personal_info',
             'education',
             'work_experiences',
+            'status',
+            'status_message',
         ]
 
 
@@ -304,4 +324,6 @@ class DoctorBasicAndPersonalDetailsSerializer(serializers.ModelSerializer):
             'department_details',
             'location',
             'degree',
+            'status',
+            'status_message',
         ]

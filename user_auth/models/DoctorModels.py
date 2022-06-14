@@ -58,6 +58,7 @@ class Doctor(models.Model):
         choices=Status.choices,
         default=Status.Pending,
     )
+    status_message = models.TextField(blank=True, null=True)
     department = models.ForeignKey('web.Department', null=True, blank=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField(_('date created'), auto_now_add=True)
 

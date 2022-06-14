@@ -7,6 +7,10 @@ from .UserAuthenticationViews import (
     UserProfileInfo,
     UserProfileDetails,
 
+    # Admin API's
+    PendingDoctors,
+    RejectedDoctors,
+    UpdateDoctorStatus,
 )
 from .DoctorViews import (
     DoctorEditGeneralInfo,
@@ -50,4 +54,9 @@ __all__ = [
     PatientEditMedicalHistory,
     PatientCreateMedicalHistory,
     PatientDeleteMedicalHistory,
+
+    # Admin API's
+    PendingDoctors,
+    RejectedDoctors,
+    UpdateDoctorStatus,
 ]

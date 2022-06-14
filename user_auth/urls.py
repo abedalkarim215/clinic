@@ -24,6 +24,11 @@ from .views import (
     PatientEditMedicalHistory,
     PatientCreateMedicalHistory,
     PatientDeleteMedicalHistory,
+
+    # Admin Views
+    PendingDoctors,
+    RejectedDoctors,
+    UpdateDoctorStatus,
 )
 
 urlpatterns = [
@@ -52,5 +57,10 @@ urlpatterns = [
     path('patient/edit/medical/history/', PatientEditMedicalHistory.as_view()),
     path('patient/create/medical/history/', PatientCreateMedicalHistory.as_view()),
     path('patient/delete/medical/history/', PatientDeleteMedicalHistory.as_view()),
+
+    # Admin API's
+    # path('get/pending/doctors/', PendingDoctors.as_view()),
+    # path('get/rejected/doctors/', RejectedDoctors.as_view()),
+    path('update/doctor/status/', UpdateDoctorStatus.as_view()),
 
 ]

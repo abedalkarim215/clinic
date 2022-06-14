@@ -150,6 +150,13 @@ class User(AbstractBaseUser, PermissionsMixin):
                 except:
                     return "Rejected"
 
+    def status_message(self):
+        try:
+            doctor = self.doctor
+            return doctor.status_message
+        except:
+            return None
+
     def __str__(self):
         return self.email
 

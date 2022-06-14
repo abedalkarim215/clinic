@@ -91,6 +91,7 @@ class UserBasicInfoSerializer(serializers.ModelSerializer):
             'id',
             'account_type',
             'status',
+            'status_message',
             'email',
             'first_name',
             'last_name',

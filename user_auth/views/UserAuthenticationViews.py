@@ -15,6 +15,7 @@ from django.http import HttpResponseRedirect
 from ..permissions import IsDoctor, IsPatient, IsAdmin, IsDoctorRegardlessStatus
 from ..models import (
     User,
+    Doctor,
 )
 from knox.models import AuthToken
 
@@ -203,6 +204,107 @@ class UserProfileDetails(generics.RetrieveAPIView):
                     },
                     status=404
                 )
+
+
+class PendingDoctors(generics.ListAPIView):
+    from user_auth.serializers import DoctorBasicAndEducationDetailsSerializer
+    serializer_class = DoctorBasicAndEducationDetailsSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get_queryset(self):
+        return Doctor.objects.filter(status=2)
+
+
+class RejectedDoctors(generics.ListAPIView):
+    from user_auth.serializers import DoctorBasicAndEducationDetailsSerializer
+    serializer_class = DoctorBasicAndEducationDetailsSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get_queryset(self):
+        return Doctor.objects.filter(status=2)
+
+
+class UpdateDoctorStatus(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get_object(self):
+        try:
+            doctor_user_id = int(self.request.POST["id"])
+            status = int(self.request.POST["status"])
+            status_message = self.request.POST.get("status_message")
+        except:
+            return 0, -1, -1
+        try:
+            doctor = User.objects.get(id=doctor_user_id).doctor
+        except:
+            return 1, 0, 0
+        return doctor, status, status_message
+
+    def update(self, request, *args, **kwargs):
+        instance, status, status_message = self.get_object()
+        if instance == 0 or status not in [0, 1]:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "يرجى التأكد من إرسال البيانات المطلوبة",
+                },
+                status=400
+            )
+        elif instance == 1:
+            return Response(
+                {
+                    'status': False,
+                    'msg': "الدكتور الذي تحاول التعديل عليه غير موجود",
+                },
+                status=404
+            )
+        else:
+            if status == 0:
+                if instance.status == 0:
+                    return Response(
+                        {
+                            'status': False,
+                            'msg': "الدكتور الذي تحاول رفضه ،  مرفوض من قبل",
+                        },
+                        status=400
+                    )
+                else:
+                    instance.status = 0
+                    if status_message:
+                        instance.status_message = status_message
+                    instance.save()
+                    return Response(
+                        {
+                            'status': True,
+                            'msg': "تم رفض الدكتور بنجاح",
+                            'status_message': status_message,
+                            'doctor_id': int(instance.id),
+                        },
+                        status=201
+                    )
+            elif status == 1:
+                if instance.status == 1:
+                    return Response(
+                        {
+                            'status': False,
+                            'msg': "الدكتور الذي تحاول قبوله ،  مقبول من قبل",
+                        },
+                        status=400
+                    )
+                else:
+                    instance.status = 1
+                    if status_message:
+                        instance.status_message = status_message
+                    instance.save()
+                    return Response(
+                        {
+                            'status': True,
+                            'msg': "تم قبول الدكتور بنجاح",
+                            'status_message': status_message,
+                            'doctor_id': int(instance.id),
+                        },
+                        status=201
+                    )
 
 
 class CheckLogin(generics.RetrieveAPIView):
