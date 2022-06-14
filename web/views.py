@@ -1139,6 +1139,17 @@ class DoctorDirectedQuestions(generics.ListAPIView):
     from .serializers import QuestionSerializer
     serializer_class = QuestionSerializer
     permission_classes = [IsAuthenticated, IsDoctor]
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'title',
+        'body',
+        'patient__user__first_name',
+        'patient__user__last_name',
+        'to_doctor__user__first_name',
+        'to_doctor__user__last_name',
+        'to_doctor__department__name',
+        'department__name'
+    ]
 
     def get_queryset(self):
         return Question.objects.filter(to_doctor=self.request.user.doctor)
