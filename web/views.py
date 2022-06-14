@@ -803,6 +803,17 @@ class PersonalQuestions(generics.ListAPIView):
     from .serializers import QuestionSerializer
     serializer_class = QuestionSerializer
     permission_classes = [IsAuthenticated, IsPatient]
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'title',
+        'body',
+        'patient__user__first_name',
+        'patient__user__last_name',
+        'to_doctor__user__first_name',
+        'to_doctor__user__last_name',
+        'to_doctor__department__name',
+        'department__name'
+    ]
 
     def get_queryset(self):
         return Question.objects.filter(patient=self.request.user.patient)
@@ -826,8 +837,8 @@ class AllBlogs(generics.ListAPIView):
 
 
 class Doctors(generics.ListAPIView):
-    from user_auth.serializers import DoctorPersonalInfoSerializer
-    serializer_class = DoctorPersonalInfoSerializer
+    from user_auth.serializers import DoctorBasicAndPersonalDetailsSerializer
+    serializer_class = DoctorBasicAndPersonalDetailsSerializer
     permission_classes = [IsAuthenticated, IsDoctor | IsPatient]
 
     def get_queryset(self):
@@ -883,6 +894,14 @@ class PersonalBlogs(generics.ListAPIView):
     from .serializers import BlogSerializer
     serializer_class = BlogSerializer
     permission_classes = [IsAuthenticated, IsDoctor]
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'title',
+        'doctor__user__first_name',
+        'doctor__user__last_name',
+        'body',
+        'doctor__department__name'
+    ]
 
     def get_queryset(self):
         return Blog.objects.filter(doctor=self.request.user.doctor).order_by('-created_at')

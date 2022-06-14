@@ -273,3 +273,35 @@ class DoctorBasicAndEducationDetailsSerializer(serializers.ModelSerializer):
             'degree',
         ]
         read_only_fields = ['id']
+
+
+class DoctorBasicAndPersonalDetailsSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField('get_user_id', read_only=True)
+    image = serializers.SerializerMethodField('get_doctor_image_full_url', read_only=True)
+    degree = serializers.SerializerMethodField('get_doctor_degree', read_only=True)
+
+    def get_doctor_image_full_url(self, obj):
+        doctor_image = obj.user.image.url
+        request = self.context.get('request')
+        return request.build_absolute_uri(doctor_image)
+
+    def get_user_id(self, obj):
+        return obj.user.id
+
+    def get_doctor_degree(self, obj):
+        try:
+            return obj.education.degree
+        except:
+            return None
+
+    class Meta:
+        model = Doctor
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'image',
+            'department_details',
+            'location',
+            'degree',
+        ]

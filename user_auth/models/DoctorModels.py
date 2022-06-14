@@ -64,6 +64,10 @@ class Doctor(models.Model):
     def __str__(self):
         return self.user.email
 
+    def department_details(self):
+        from web.serializers import DepartmentSerializer
+        return DepartmentSerializer(self.department).data
+
     def first_name(self):
         return self.user.first_name
 
