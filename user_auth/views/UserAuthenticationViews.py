@@ -221,7 +221,7 @@ class RejectedDoctors(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
     def get_queryset(self):
-        return Doctor.objects.filter(status=2)
+        return Doctor.objects.filter(status=0)
 
 
 class UpdateDoctorStatus(generics.UpdateAPIView):
@@ -278,7 +278,7 @@ class UpdateDoctorStatus(generics.UpdateAPIView):
                             'status': True,
                             'msg': "تم رفض الدكتور بنجاح",
                             'status_message': status_message,
-                            'doctor_id': int(instance.id),
+                            'doctor_id': int(instance.user.id),
                         },
                         status=201
                     )
@@ -301,7 +301,7 @@ class UpdateDoctorStatus(generics.UpdateAPIView):
                             'status': True,
                             'msg': "تم قبول الدكتور بنجاح",
                             'status_message': status_message,
-                            'doctor_id': int(instance.id),
+                            'doctor_id': int(instance.user.id),
                         },
                         status=201
                     )

@@ -2,6 +2,8 @@ from rest_framework import serializers
 from django.core.files.storage import FileSystemStorage
 from datetime import datetime
 from rest_framework.response import Response
+import string
+import random
 
 from .models import (
     Department,
@@ -25,9 +27,6 @@ def get_upload_file_path(type, filename):
         filename=filename
     )
 
-
-import string
-import random
 
 ascii = set(string.printable)
 en_ch = list(string.ascii_lowercase)

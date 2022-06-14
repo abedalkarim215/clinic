@@ -6,8 +6,7 @@ from rest_framework.response import Response
 import os
 from django.http import FileResponse, HttpResponse
 from rest_framework import filters
-
-from rest_framework import status
+from django.db.models import Q
 
 from .models import (
     Department,
@@ -834,9 +833,6 @@ class AllBlogs(generics.ListAPIView):
 
     def get_queryset(self):
         return Blog.objects.all().order_by('-created_at')
-
-
-from django.db.models import Q
 
 
 class Doctors(generics.ListAPIView):
