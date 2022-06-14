@@ -853,14 +853,14 @@ class Doctors(generics.ListAPIView):
         except:
             return 0
         if department_id == 'all':
-            department_doctors = Doctor.objects.all()
+            department_doctors = Doctor.objects.filter(status=1)
         elif not (department_id > 0):
             return 1
         else:
             if not Department.objects.filter(id=department_id).exists():
                 return 1
             else:
-                department_doctors = Doctor.objects.filter(department_id=department_id)
+                department_doctors = Doctor.objects.filter(department_id=department_id, status=1)
         return department_doctors
 
     def list(self, request, *args, **kwargs):
