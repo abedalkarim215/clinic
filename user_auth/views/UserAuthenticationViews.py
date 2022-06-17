@@ -224,6 +224,12 @@ class RejectedDoctors(generics.ListAPIView):
         return Doctor.objects.filter(status=0)
 
 
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
+
+
 class UpdateDoctorStatus(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
@@ -273,6 +279,16 @@ class UpdateDoctorStatus(generics.UpdateAPIView):
                     if status_message:
                         instance.status_message = status_message
                     instance.save()
+                    msg_html = render_to_string('user_auth/reject.html',
+                                                {'doctor_full_name': instance.user.full_name,
+                                                 'date': datetime.datetime.today().date(),
+                                                 'admin_status_message': status_message})
+                    subject, from_email, to = 'Rejected As Doctor in E-Clinic System Website', settings.EMAIL_HOST_USER, instance.user.email
+                    text_content = 'This is an important message.'
+                    html_content = msg_html
+                    mssg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+                    mssg.attach_alternative(html_content, "text/html")
+                    mssg.send()
                     return Response(
                         {
                             'status': True,
