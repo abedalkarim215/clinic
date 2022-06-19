@@ -18,20 +18,20 @@
 							"formdata": [
 								{
 									"key": "email",
-									"value": "Doctor@doctor.com",
+									"value": "karim@karim.com",
 									"description": "Patient@patient.com",
 									"type": "text"
 								},
 								{
 									"key": "password",
 									"value": "12345678",
-									"description": "Doctor@doctor.com",
+									"description": "abedalkarim215@gmail.com",
 									"type": "text"
 								},
 								{
 									"key": "",
 									"value": "",
-									"description": "admin : karim@karim.com",
+									"description": "karim@karim.com",
 									"type": "text"
 								},
 								{
@@ -101,6 +101,14 @@
 							"mode": "formdata",
 							"formdata": [
 								{
+									"key": "first_name",
+									"value": "abed"
+								},
+								{
+									"key": "last_name",
+									"value": "abed"
+								},
+								{
 									"key": "type",
 									"value": "Doctor",
 									"description": "Doctor - Patient",
@@ -108,7 +116,7 @@
 								},
 								{
 									"key": "email",
-									"value": "Doctor@doctor.com",
+									"value": "Doctor5s45@doctor.com",
 									"type": "text"
 								},
 								{

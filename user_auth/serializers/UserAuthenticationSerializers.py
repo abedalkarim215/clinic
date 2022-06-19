@@ -15,12 +15,16 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            'first_name',
+            'last_name',
             'type',
             'email',
             'password',
             'confirm_password',
         ]
         extra_kwargs = {
+            'first_name': {'required': False},
+            'last_name': {'required': False},
             'type': {'required': True},
             'email': {'required': True},
             'password': {
@@ -34,6 +38,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        first_name = validated_data['first_name'] if 'first_name' in validated_data else ""
+        last_name = validated_data['last_name'] if 'last_name' in validated_data else ""
         type = validated_data['type']
         email = validated_data['email']
         password = validated_data['password']
@@ -52,6 +58,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(msg, code='authorization')
 
         user = User.objects.create_user(
+            first_name=first_name,
+            last_name=last_name,
             email=email,
             password=password,
         )
@@ -79,6 +87,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            'first_name',
+            'last_name',
             'account_photo',
             'email',
         ]
